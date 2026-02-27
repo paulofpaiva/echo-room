@@ -48,6 +48,7 @@ export function CommentList({ postId, replyCounts = {} }: CommentListProps) {
         <Button
           variant="outline"
           size="sm"
+          className="w-full"
           disabled={isFetchingNextPage}
           onClick={() => fetchNextPage()}
         >

@@ -17,7 +17,7 @@ export function FeedSkeleton({ communitySlug }: FeedSkeletonProps) {
         ← Back to communities
       </Link>
       <h1 className="text-2xl font-semibold">/c/{communitySlug}</h1>
-      <div className="space-y-3">
+      <div className="space-y-4">
         {Array.from({ length: PLACEHOLDER_POSTS }).map((_, i) => (
           <div
             key={i}

@@ -82,12 +82,13 @@ export function FeedPage() {
           <p className="text-muted-foreground">No posts yet.</p>
         ) : (
           posts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={post}
-              communitySlug={communitySlug}
-              commentCount={commentCounts[post.id] ?? 0}
-            />
+            <div key={post.id}>
+              <PostCard
+                post={post}
+                communitySlug={communitySlug}
+                commentCount={commentCounts[post.id] ?? 0}
+              />
+            </div>
           ))
         )}
         {isFetchingNextPage && (
@@ -97,7 +98,7 @@ export function FeedPage() {
         )}
       </div>
       {hasNextPage && !isFetchingNextPage && (
-        <Button variant="outline" onClick={() => void fetchNextPage()}>
+        <Button variant="outline" className="w-full" onClick={() => void fetchNextPage()}>
           Load more
         </Button>
       )}
