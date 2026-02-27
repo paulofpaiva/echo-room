@@ -1,0 +1,28 @@
+import { useNavigate } from "react-router-dom";
+import { useCreatePost } from "@/hooks/useCreatePost";
+import { getOrCreateAnonFingerprint } from "@/lib/anon-fingerprint";
+import type { CreatePostFormValues } from "@/schemas/createPost";
+
+export function useCreatePostForm(slug: string | undefined) {
+  const navigate = useNavigate();
+  const createPost = useCreatePost();
+
+  const submit = async (data: CreatePostFormValues, imageFiles: File[]) => {
+    if (!slug?.trim()) return;
+    const { id } = await createPost.mutateAsync({
+      title: data.title.trim(),
+      content: data.content.trim(),
+      communitySlug: slug,
+      anonFingerprint: getOrCreateAnonFingerprint() || null,
+      imageFiles,
+    });
+    navigate(`/c/${slug}/post/${id}`, { state: { from: `/c/${slug}` }, replace: true });
+  };
+
+  return {
+    submit,
+    isPending: createPost.isPending,
+    isError: createPost.isError,
+    error: createPost.error,
+  };
+}

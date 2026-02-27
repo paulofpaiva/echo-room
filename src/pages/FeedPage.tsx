@@ -6,6 +6,7 @@ import { useCommentCounts } from "@/hooks/useCommentCounts";
 import { PostCard } from "@/components/post/PostCard";
 import { FeedSkeleton } from "@/components/skeleton/FeedSkeleton";
 import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
 
 export function FeedPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -76,7 +77,16 @@ export function FeedPage() {
       >
         ← Back to communities
       </Link>
-      <h1 className="text-2xl font-semibold">/c/{communitySlug}</h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-2xl font-semibold">/c/{communitySlug}</h1>
+        <Link
+          to={`/c/${communitySlug}/post/new`}
+          className="flex items-center gap-1.5 text-sm text-primary hover:underline"
+        >
+          <PlusCircle className="h-4 w-4" />
+          Create post
+        </Link>
+      </div>
       <div className="space-y-4">
         {posts.length === 0 ? (
           <p className="text-muted-foreground">No posts yet.</p>

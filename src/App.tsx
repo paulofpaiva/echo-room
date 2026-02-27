@@ -4,6 +4,7 @@ import { HomePage } from "@/pages/HomePage";
 import { FeedPage } from "@/pages/FeedPage";
 import { PostDetailPage } from "@/pages/PostDetailPage";
 import { CommentDetailPage } from "@/pages/CommentDetailPage";
+import { CreatePostPage } from "@/pages/CreatePostPage";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/c/:slug" element={<FeedPage />} />
+          <Route path="/c/:slug/post/new" element={<CreatePostPage />} />
           <Route path="/c/:slug/post/:postId" element={<PostDetailPage />} />
           <Route path="/c/:slug/post/:postId/comment/:commentId" element={<CommentDetailPage />} />
         </Route>
