@@ -1,10 +1,6 @@
--- Seed communities (idempotent: re-run only inserts missing slugs)
+-- Run this in Supabase Dashboard → SQL Editor if you only want to add the 3 PT-BR communities.
+-- Safe to run multiple times (skips if slug already exists).
 insert into communities (name, slug, description) values
-  ('General', 'general', 'General discussion'),
-  ('Technology', 'technology', 'Tech news and discussion'),
-  ('Gaming', 'gaming', 'Video games and gaming culture'),
-  ('Creative', 'creative', 'Art, music, and creative works'),
-  ('Random', 'random', 'Anything goes'),
   ('Conselhos de vida', 'conselhos-de-vida', 'Conselhos e reflexões sobre a vida'),
   ('Sou babaca?', 'sou-babaca', 'Conta sua situação e descubra se você é o babaca'),
   ('Eu odeio meu vizinho', 'eu-odeio-meu-vizinho', 'Desabafos sobre vizinhos e convivência')

@@ -19,7 +19,7 @@ schema_paths = []
 
 [db.seed]
 enabled = true
-sql_paths = ["./seed.sql"]
+sql_paths = ["./seed.sql", "./seed_posts.sql", "./seed_comments.sql", "./seed_ptbr.sql"]
 
 [studio]
 enabled = true
