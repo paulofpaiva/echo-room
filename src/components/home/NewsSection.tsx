@@ -62,7 +62,7 @@ export function NewsSection() {
         </p>
       ) : (
         <div className="relative">
-          <div className="min-w-0 overflow-hidden" ref={emblaRef}>
+          <div className="min-w-0 overflow-hidden pl-3" ref={emblaRef}>
             <div className="flex gap-3 -ml-3 touch-pan-y">
               {items.map((news) => (
                 <NewsCardCompact key={news.id} news={news} />

@@ -2,7 +2,7 @@ const SLIDE_COUNT = 5;
 
 export function NewsCarouselSkeleton() {
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden pl-3">
       <div className="flex gap-3 -ml-3">
         {Array.from({ length: SLIDE_COUNT }).map((_, i) => (
           <div
