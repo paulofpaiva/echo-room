@@ -7,8 +7,6 @@ export interface Post {
   content: string;
   community_id: string;
   anon_fingerprint: string | null;
-  upvotes: number;
-  downvotes: number;
   created_at: string;
   updated_at: string;
   community?: Community;

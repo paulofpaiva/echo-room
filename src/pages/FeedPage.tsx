@@ -4,6 +4,7 @@ import { usePostsFeed } from "@/hooks/usePostsFeed";
 import { useCommunities } from "@/hooks/useCommunities";
 import { useCommentCounts } from "@/hooks/useCommentCounts";
 import { PostCard } from "@/components/post/PostCard";
+import { FeedSkeleton } from "@/components/skeleton/FeedSkeleton";
 import { Button } from "@/components/ui/button";
 
 export function FeedPage() {
@@ -53,12 +54,7 @@ export function FeedPage() {
 
   const isInitialLoading = isLoading && posts.length === 0;
   if (isInitialLoading) {
-    return (
-      <div className="space-y-4">
-        <h1 className="text-2xl font-semibold">Feed</h1>
-        <p className="text-muted-foreground">Loading posts…</p>
-      </div>
-    );
+    return <FeedSkeleton communitySlug={communitySlug} />;
   }
 
   if (isError) {
@@ -81,7 +77,7 @@ export function FeedPage() {
         ← Back to communities
       </Link>
       <h1 className="text-2xl font-semibold">/c/{communitySlug}</h1>
-      <div className="space-y-3">
+      <div className="space-y-4">
         {posts.length === 0 ? (
           <p className="text-muted-foreground">No posts yet.</p>
         ) : (

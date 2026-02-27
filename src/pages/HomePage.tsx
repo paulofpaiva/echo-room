@@ -75,7 +75,7 @@ export function HomePage() {
             <CardDescription className="text-xs leading-snug">
               Anonymous imageboard-style community. Post and comment without
               accounts—your identity is a short fingerprint. Browse by community,
-              vote, expand replies. No sign-up required.
+              expand replies. No sign-up required.
             </CardDescription>
           </CardHeader>
         </Card>

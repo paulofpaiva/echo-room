@@ -47,7 +47,7 @@ export function CommentCard({
           <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-2">
             <FingerprintBadge anonFingerprint={comment.anon_fingerprint} />
             <span>
-              {new Date(comment.created_at).toLocaleString()} · ↑ {comment.upvotes} ↓ {comment.downvotes}
+              {new Date(comment.created_at).toLocaleString()}
               · {replyCount} repl{replyCount === 1 ? "y" : "ies"}
               {expanded ? " · Click to collapse" : " · Click to see replies"}
             </span>

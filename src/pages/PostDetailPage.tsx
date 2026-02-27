@@ -56,10 +56,7 @@ export function PostDetailPage() {
           <CardTitle>{post.title}</CardTitle>
           <CardDescription className="flex flex-wrap items-center gap-2">
             <FingerprintBadge anonFingerprint={post.anon_fingerprint} />
-            <span>
-              {new Date(post.created_at).toLocaleString()} · ↑ {post.upvotes} ↓{" "}
-              {post.downvotes}
-            </span>
+            <span>{new Date(post.created_at).toLocaleString()}</span>
           </CardDescription>
         </CardHeader>
         <CardContent>
