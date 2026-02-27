@@ -23,3 +23,8 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Supabase local
+supabase/.branches
+supabase/.temp
+supabase/functions/.env
