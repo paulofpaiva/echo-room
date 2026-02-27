@@ -15,7 +15,7 @@ export function PostDetailPage() {
   const { data: post, isLoading, isError, error } = usePost(postId);
 
   if (!slug || !postId) {
-    return <Navigate to="/c/general" replace />;
+    return <Navigate to="/" replace />;
   }
 
   if (isLoading) {
@@ -33,7 +33,7 @@ export function PostDetailPage() {
           {error instanceof Error ? error.message : "Post not found."}
         </p>
         <Link to={`/c/${slug}`} className="text-primary text-sm underline">
-          Back to feed
+          ← Back to /c/{slug}
         </Link>
       </div>
     );

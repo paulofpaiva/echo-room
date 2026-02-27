@@ -1,28 +1,26 @@
 import { useState } from "react";
-import { useParams, Navigate } from "react-router-dom";
+import { Link, useParams, Navigate } from "react-router-dom";
 import { usePosts } from "@/hooks/usePosts";
 import { useCommunities } from "@/hooks/useCommunities";
 import { PostCard } from "@/components/post/PostCard";
 import { Button } from "@/components/ui/button";
 
-const DEFAULT_COMMUNITY = "general";
-
 export function FeedPage() {
   const { slug } = useParams<{ slug: string }>();
-  const communitySlug = slug ?? DEFAULT_COMMUNITY;
+  const communitySlug = slug ?? "";
   const [page, setPage] = useState(1);
 
   const { data: communitiesData } = useCommunities();
   const { data, isLoading, isError, error } = usePosts(communitySlug, page);
 
   if (!slug) {
-    return <Navigate to={`/c/${DEFAULT_COMMUNITY}`} replace />;
+    return <Navigate to="/" replace />;
   }
 
   const communityExists =
     communitiesData?.some((c) => c.slug === communitySlug) ?? false;
-  if (communitiesData && !communityExists && slug !== DEFAULT_COMMUNITY) {
-    return <Navigate to={`/c/${DEFAULT_COMMUNITY}`} replace />;
+  if (communitiesData && !communityExists) {
+    return <Navigate to="/" replace />;
   }
 
   if (isLoading) {
@@ -49,6 +47,12 @@ export function FeedPage() {
 
   return (
     <div className="space-y-6">
+      <Link
+        to="/"
+        className="text-sm text-muted-foreground hover:text-foreground"
+      >
+        ← Back to communities
+      </Link>
       <h1 className="text-2xl font-semibold">/c/{communitySlug}</h1>
       <div className="space-y-3">
         {posts.length === 0 ? (
