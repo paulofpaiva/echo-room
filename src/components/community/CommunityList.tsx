@@ -25,7 +25,7 @@ export function CommunityList({
           View more
         </Link>
       </div>
-      <ul className="list-none columns-2 sm:columns-3 gap-x-4 gap-y-0.5">
+      <ul className="list-none columns-2 gap-x-4 gap-y-0.5">
         {(communities ?? []).map((community) => (
           <li key={community.id} className="break-inside-avoid py-0.5">
             <Link

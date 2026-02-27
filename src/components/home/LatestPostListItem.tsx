@@ -25,6 +25,8 @@ interface LatestPostListItemProps {
   commentCount: number;
   /** "post" = FileText (default), "comment" = MessageSquare for most-commented */
   iconVariant?: "post" | "comment";
+  /** "row" = full row layout, "column" = compact for columned list (like communities) */
+  variant?: "row" | "column";
   className?: string;
 }
 
@@ -32,6 +34,7 @@ export function LatestPostListItem({
   post,
   commentCount,
   iconVariant = "post",
+  variant = "row",
   className,
 }: LatestPostListItemProps) {
   const slug = post.community?.slug ?? "";
@@ -46,6 +49,27 @@ export function LatestPostListItem({
   const preview = post.content
     ? stripMarkdownPreview(post.content, PREVIEW_LENGTH)
     : "";
+
+  if (variant === "column") {
+    return (
+      <li className="break-inside-avoid py-0.5">
+        <Link
+          to={postUrl}
+          className={cn(
+            "text-sm text-primary hover:underline block truncate",
+            className
+          )}
+          title={`${post.title} · /c/${slug}`}
+        >
+          {post.title}
+          <span className="text-muted-foreground font-normal">
+            {" "}/c/{slug}
+            <span className="text-muted-foreground/80"> ({commentCount})</span>
+          </span>
+        </Link>
+      </li>
+    );
+  }
 
   return (
     <li>

@@ -1,10 +1,11 @@
 import { MessageCircle } from "lucide-react";
 import { Skeleton } from "@/components/skeleton/Skeleton";
+import { cn } from "@/lib/utils";
 
 interface HomePostListSkeletonProps {
   count?: number;
   horizontal?: boolean;
-  variant?: "card" | "list";
+  variant?: "card" | "list" | "column";
 }
 
 export function HomePostListSkeleton({
@@ -12,6 +13,19 @@ export function HomePostListSkeleton({
   horizontal = false,
   variant = "card",
 }: HomePostListSkeletonProps) {
+  if (variant === "column") {
+    const widths = ["w-32", "w-40", "w-28", "w-36", "w-24", "w-40", "w-32", "w-28", "w-36", "w-30"];
+    return (
+      <ul className="list-none columns-2 gap-x-4 gap-y-0.5">
+        {Array.from({ length: count }).map((_, i) => (
+          <li key={i} className="break-inside-avoid py-0.5">
+            <Skeleton className={cn("h-4 inline-block", widths[i % widths.length])} />
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   if (variant === "list") {
     return (
       <ul className="list-none divide-y divide-border">

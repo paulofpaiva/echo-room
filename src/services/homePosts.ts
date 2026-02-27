@@ -3,6 +3,33 @@ import type { Post } from "@/types/post";
 
 const DEFAULT_LIMIT = 10;
 
+export interface LatestPostImage {
+  id: string;
+  post_id: string;
+  storage_path: string;
+  created_at: string;
+  post: {
+    id: string;
+    community: { slug: string } | null;
+  } | null;
+}
+
+/** Fetches latest post images across all communities for the home page. */
+export async function fetchLatestPostImages(
+  limit: number = 12
+): Promise<LatestPostImage[]> {
+  const { data, error } = await supabase
+    .from("post_images")
+    .select(
+      "id, post_id, storage_path, created_at, post:posts!inner(id, community:communities!inner(slug))"
+    )
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return (data ?? []) as unknown as LatestPostImage[];
+}
+
 /** Fetches latest posts across all communities for the home page. */
 export async function fetchLatestPosts(
   limit: number = DEFAULT_LIMIT

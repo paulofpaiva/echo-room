@@ -3,7 +3,7 @@ import { useMostCommentedPosts } from "@/hooks/useMostCommentedPosts";
 import { LatestPostListItem } from "./LatestPostListItem";
 import { HomePostListSkeleton } from "./HomePostListSkeleton";
 
-const LIMIT = 8;
+const LIMIT = 10;
 
 export function TopCommentedPostsSection() {
   const { data, isLoading, isError, error } = useMostCommentedPosts(LIMIT);
@@ -31,17 +31,18 @@ export function TopCommentedPostsSection() {
         Most commented
       </h2>
       {isLoading ? (
-        <HomePostListSkeleton variant="list" count={5} />
+        <HomePostListSkeleton variant="column" count={10} />
       ) : posts.length === 0 ? (
         <p className="text-sm text-muted-foreground">No posts yet.</p>
       ) : (
-        <ul className="list-none divide-y divide-border">
+        <ul className="list-none columns-2 gap-x-4 gap-y-0.5">
           {posts.map((post) => (
             <LatestPostListItem
               key={post.id}
               post={post}
               commentCount={commentCounts[post.id] ?? 0}
               iconVariant="comment"
+              variant="column"
             />
           ))}
         </ul>

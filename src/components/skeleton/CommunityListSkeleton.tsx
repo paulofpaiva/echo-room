@@ -21,7 +21,7 @@ export function CommunityListSkeleton({
         </h2>
       )}
       {variant === "columns" ? (
-        <ul className="list-none columns-2 sm:columns-3 gap-x-4 gap-y-0.5">
+        <ul className="list-none columns-2 gap-x-4 gap-y-0.5">
           {Array.from({ length: PLACEHOLDER_ITEMS }).map((_, i) => (
             <li key={i} className="break-inside-avoid py-0.5">
               <Skeleton className="h-4 w-20 inline-block" />

@@ -5,7 +5,7 @@ import { useCommentCounts } from "@/hooks/useCommentCounts";
 import { LatestPostListItem } from "./LatestPostListItem";
 import { HomePostListSkeleton } from "./HomePostListSkeleton";
 
-const LIMIT = 8;
+const LIMIT = 10;
 
 export function LatestPostsSection() {
   const { data: posts = [], isLoading, isError, error } = useLatestPosts(LIMIT);
@@ -18,7 +18,7 @@ export function LatestPostsSection() {
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-lg font-semibold flex items-center gap-1.5">
             <Sparkles className="h-5 w-5 text-primary shrink-0" aria-hidden />
-            Latest posts
+            Recent posts
           </h2>
           <Link
             to="/search"
@@ -39,7 +39,7 @@ export function LatestPostsSection() {
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-lg font-semibold flex items-center gap-1.5">
           <Sparkles className="h-5 w-5 text-primary shrink-0" aria-hidden />
-          Latest posts
+          Recent posts
         </h2>
         <Link
           to="/search"
@@ -49,16 +49,17 @@ export function LatestPostsSection() {
         </Link>
       </div>
       {isLoading ? (
-        <HomePostListSkeleton variant="list" count={5} />
+        <HomePostListSkeleton variant="column" count={10} />
       ) : posts.length === 0 ? (
         <p className="text-sm text-muted-foreground">No posts yet.</p>
       ) : (
-        <ul className="list-none divide-y divide-border">
+        <ul className="list-none columns-2 gap-x-4 gap-y-0.5">
           {posts.map((post) => (
             <LatestPostListItem
               key={post.id}
               post={post}
               commentCount={commentCounts[post.id] ?? 0}
+              variant="column"
             />
           ))}
         </ul>
