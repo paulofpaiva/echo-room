@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { MessageCircle } from "lucide-react";
 import type { Post } from "@/types/post";
 import { cn } from "@/lib/utils";
 
@@ -7,14 +8,6 @@ interface PostCardProps {
   communitySlug: string;
   commentCount?: number;
   className?: string;
-}
-
-function CommentIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-    </svg>
-  );
 }
 
 export function PostCard({
@@ -41,7 +34,7 @@ export function PostCard({
         </p>
         <div className="mt-2 flex items-center text-muted-foreground">
           <span className="flex items-center gap-1 text-xs" title="Comments">
-            <CommentIcon className="h-3 w-3" />
+            <MessageCircle className="h-3 w-3" />
             <span>{commentCount}</span>
           </span>
         </div>
