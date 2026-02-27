@@ -5,7 +5,7 @@ interface PostDetailSkeletonProps {
   slug: string;
 }
 
-export function PostDetailSkeleton({ slug }: PostDetailSkeletonProps) {
+export function PostDetailSkeleton({ slug: _slug }: PostDetailSkeletonProps) {
   return (
     <div className="space-y-6">
       <BackLink />

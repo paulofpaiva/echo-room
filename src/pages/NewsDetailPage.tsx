@@ -1,4 +1,4 @@
-import { Link, useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 import { BackLink } from "@/components/navigation/BackLink";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,7 @@ import { getOrCreateAnonFingerprint } from "@/lib/anon-fingerprint";
 import { getCountryCodeForSubmit } from "@/services/geo";
 import { createCommentSchema, type CreateCommentFormValues } from "@/schemas/createComment";
 import { Button } from "@/components/ui/button";
+import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { cn } from "@/lib/utils";
 
 export function NewsDetailPage() {
@@ -98,6 +99,7 @@ export function NewsDetailPage() {
             {news.published_at && (
               <span>{new Date(news.published_at).toLocaleString()}</span>
             )}
+            <ShareCopyButton path={`/news/${news.id}`} className="ml-1" />
           </p>
           {news.description && (
             <p className="mt-2 text-sm text-foreground">
