@@ -62,7 +62,7 @@ export function NewsSection() {
         </p>
       ) : (
         <div className="relative">
-          <div className="overflow-hidden" ref={emblaRef}>
+          <div className="min-w-0 overflow-hidden" ref={emblaRef}>
             <div className="flex gap-3 -ml-3 touch-pan-y">
               {items.map((news) => (
                 <NewsCardCompact key={news.id} news={news} />
@@ -73,7 +73,7 @@ export function NewsSection() {
             type="button"
             variant="outline"
             size="icon"
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 z-10 h-8 w-8 rounded-full border border-border bg-background/95 shadow-sm"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden h-9 w-9 rounded-full border border-border bg-background/90 shadow-sm backdrop-blur-sm sm:inline-flex"
             onClick={scrollPrev}
             disabled={!canScrollPrev}
             aria-label="Previous news"
@@ -84,7 +84,7 @@ export function NewsSection() {
             type="button"
             variant="outline"
             size="icon"
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 z-10 h-8 w-8 rounded-full border border-border bg-background/95 shadow-sm"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden h-9 w-9 rounded-full border border-border bg-background/90 shadow-sm backdrop-blur-sm sm:inline-flex"
             onClick={scrollNext}
             disabled={!canScrollNext}
             aria-label="Next news"
