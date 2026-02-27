@@ -7,12 +7,13 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type NavigationContextValue = {
-  previousPath: string;
+  historyStack: string[];
   currentPath: string;
-  getBackTarget: (current: string, previous: string) => { to: string; label: string };
+  getBackTarget: () => { to: string; label: string };
+  navigateBack: (to: string) => void;
 };
 
 const NavigationContext = createContext<NavigationContextValue | null>(null);
@@ -26,97 +27,92 @@ function pathToBackLabel(path: string): string {
   if (path.startsWith("/c/") && /^\/c\/[^/]+\/?$/.test(path.split("?")[0])) return "Back to community";
   if (path.startsWith("/c/") && path.includes("/post/") && !path.includes("/comment/")) return "Back to post";
   if (path.startsWith("/c/") && path.includes("/comment/")) return "Back to post";
+  if (path.startsWith("/news/") && path.includes("/comment/")) return "Back to article";
   return "Back";
 }
 
 /**
- * Route → back target map. Hub pages (communities, search, news list) always
- * back to home to avoid loops (e.g. Communities → Community → Back → Communities
- * would then show "Back to community" and loop; we force "Back to home" on hubs).
+ * Hierarchical parent path for the current route. Used when history stack is
+ * empty (direct load, new tab, refresh) so Back still has a sensible target.
  */
-function getBackTargetForCurrentRoute(
-  currentPath: string,
-  previousPath: string
-): { to: string; label: string } {
-  const pathname = currentPath.split("?")[0];
+function getParentPath(fullPath: string): string {
+  const pathname = fullPath.split("?")[0];
+  const query = fullPath.includes("?") ? fullPath.slice(fullPath.indexOf("?")) : "";
 
-  // Hub pages: always back to home so Back never sends to a detail we came from
-  if (pathname === "/communities" || pathname.startsWith("/communities?")) {
-    return { to: "/", label: "Back to home" };
+  // /c/slug/post/postId/comment/commentId → /c/slug/post/postId
+  if (pathname.includes("/post/") && pathname.includes("/comment/")) {
+    const match = pathname.match(/^(\/c\/[^/]+\/post\/[^/]+)\/comment\/[^/]+/);
+    return match ? match[1] + query : "/";
   }
-  if (pathname === "/search" || pathname.startsWith("/search?")) {
-    return { to: "/", label: "Back to home" };
+  // /c/slug/post/postId or /c/slug/post/new → /c/slug
+  if (pathname.includes("/post/")) {
+    const match = pathname.match(/^(\/c\/[^/]+)\//);
+    return match ? match[1] + query : "/";
   }
-  if (pathname === "/news") {
-    return { to: "/", label: "Back to home" };
-  }
-
-  // Community feed: use previous (e.g. /communities or /)
-  if (/^\/c\/[^/]+\/?$/.test(pathname)) {
-    const to = previousPath || "/";
-    return { to, label: pathToBackLabel(to) };
-  }
-
-  // Create post: back to that community feed
-  if (/^\/c\/[^/]+\/post\/new\/?$/.test(pathname)) {
-    const match = pathname.match(/^\/c\/([^/]+)\/post\/new/);
-    const slug = match?.[1];
-    if (slug) return { to: `/c/${slug}`, label: "Back to community" };
-  }
-
-  // Post detail: use previous (feed, search, or home)
-  if (pathname.includes("/post/") && !pathname.includes("/comment/")) {
-    const to = previousPath || "/";
-    return { to, label: pathToBackLabel(to) };
-  }
-
-  // Comment detail (post thread): back to post
-  if (pathname.includes("/comment/")) {
-    const to = previousPath || "/";
-    return { to, label: pathToBackLabel(to) };
-  }
-
-  // News article: use previous (news list or home)
-  if (pathname.match(/^\/news\/[^/]+\/?$/) && !pathname.includes("/comment/")) {
-    const to = previousPath || "/news";
-    return { to, label: pathToBackLabel(to) };
-  }
-
-  // News comment detail: use previous (article or news list)
+  // /c/slug → home
+  if (/^\/c\/[^/]+\/?$/.test(pathname)) return "/";
+  // /news/id/comment/cid → /news/id
   if (pathname.includes("/news/") && pathname.includes("/comment/")) {
-    const to = previousPath || "/news";
-    return { to, label: pathToBackLabel(to) };
+    const match = pathname.match(/^(\/news\/[^/]+)\/comment\/[^/]+/);
+    return match ? match[1] + query : "/news";
   }
-
-  // Home or unknown: back to previous
-  const to = previousPath || "/";
-  return { to, label: pathToBackLabel(to) };
+  // /news/id → /news
+  if (pathname.match(/^\/news\/[^/]+\/?$/)) return "/news";
+  // Hub pages → home
+  if (pathname === "/communities" || pathname.startsWith("/search") || pathname === "/news") return "/";
+  return "/";
 }
 
 export function NavigationProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
-  const [previousPath, setPreviousPath] = useState("/");
+  const navigate = useNavigate();
+  const [historyStack, setHistoryStack] = useState<string[]>([]);
   const [currentPath, setCurrentPath] = useState(location.pathname + location.search);
   const ref = useRef(location.pathname + location.search);
+  const isInitialMount = useRef(true);
 
   useLayoutEffect(() => {
     const current = location.pathname + location.search;
-    if (ref.current !== current) {
-      setPreviousPath(ref.current);
-      setCurrentPath(current);
-      ref.current = current;
+    const fromBack = (location.state as { fromBack?: boolean } | null)?.fromBack === true;
+
+    if (fromBack) {
+      setHistoryStack((prev) => (prev.length > 0 ? prev.slice(0, -1) : prev));
+    } else if (ref.current !== current) {
+      if (!isInitialMount.current) {
+        setHistoryStack((prev) => [...prev, ref.current]);
+      }
     }
+
+    isInitialMount.current = false;
+    setCurrentPath(current);
+    ref.current = current;
   }, [location]);
 
-  const getBackTarget = useCallback(
-    (current: string, previous: string) => getBackTargetForCurrentRoute(current, previous),
-    []
+  const getBackTarget = useCallback((): { to: string; label: string } => {
+    const pathname = currentPath.split("?")[0];
+    const stack = historyStack;
+
+    if (pathname === "/" || pathname === "") {
+      return { to: "/", label: "Back to home" };
+    }
+
+    const to = stack.length > 0 ? stack[stack.length - 1]! : getParentPath(currentPath);
+    const label = pathToBackLabel(to);
+    return { to: to || "/", label };
+  }, [currentPath, historyStack]);
+
+  const navigateBack = useCallback(
+    (to: string) => {
+      navigate(to, { replace: true, state: { fromBack: true } });
+    },
+    [navigate]
   );
 
   const value: NavigationContextValue = {
-    previousPath,
+    historyStack,
     currentPath,
     getBackTarget,
+    navigateBack,
   };
 
   return (
@@ -132,7 +128,13 @@ export function useNavigation() {
   return ctx;
 }
 
-export function useBackLink(): { to: string; label: string } {
-  const { previousPath, currentPath, getBackTarget } = useNavigation();
-  return getBackTarget(currentPath, previousPath);
+export function useBackLink(): {
+  to: string;
+  label: string;
+  navigateBack: (to: string) => void;
+  currentPath: string;
+} {
+  const { getBackTarget, navigateBack, currentPath } = useNavigation();
+  const { to, label } = getBackTarget();
+  return { to, label, navigateBack, currentPath };
 }

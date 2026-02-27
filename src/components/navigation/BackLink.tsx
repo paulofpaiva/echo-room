@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useBackLink } from "@/contexts/NavigationContext";
 import { cn } from "@/lib/utils";
 
@@ -8,10 +7,22 @@ interface BackLinkProps {
 }
 
 export function BackLink({ className, variant = "muted" }: BackLinkProps) {
-  const { to, label } = useBackLink();
+  const { to, label, navigateBack, currentPath } = useBackLink();
+
+  const pathname = currentPath.split("?")[0];
+  if (pathname === "/" || pathname === "") {
+    return null;
+  }
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigateBack(to);
+  };
+
   return (
-    <Link
-      to={to}
+    <a
+      href={to}
+      onClick={handleClick}
       className={cn(
         "text-sm hover:text-foreground",
         variant === "muted" && "text-muted-foreground",
@@ -20,6 +31,6 @@ export function BackLink({ className, variant = "muted" }: BackLinkProps) {
       )}
     >
       ← {label}
-    </Link>
+    </a>
   );
 }

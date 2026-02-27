@@ -3,6 +3,7 @@ import { BackLink } from "@/components/navigation/BackLink";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageCircle, Send } from "lucide-react";
+import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { useNewsComment } from "@/hooks/useNewsComment";
 import { useNewsRepliesInfinite } from "@/hooks/useNewsCommentsInfinite";
 import { useNewsReplyCounts } from "@/hooks/useNewsReplyCounts";
@@ -105,9 +106,12 @@ export function NewsCommentDetailPage() {
         <p className="mt-2 text-xs text-muted-foreground">
           <span>{new Date(comment.created_at).toLocaleString()}</span>
         </p>
-        <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground" title="Replies">
-          <MessageCircle className="h-3 w-3" />
-          <span>{replyCount}</span>
+        <p className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1" title="Replies">
+            <MessageCircle className="h-3 w-3" />
+            <span>{replyCount}</span>
+          </span>
+          <ShareCopyButton path={`/news/${newsId}/comment/${commentId}`} />
         </p>
       </div>
 

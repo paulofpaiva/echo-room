@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
 import type { Post } from "@/types/post";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
+import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { Skeleton } from "@/components/skeleton/Skeleton";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
@@ -25,14 +26,16 @@ export function PostCard({
 }: PostCardProps) {
   const slug = post.community?.slug ?? communitySlug;
 
+  const postUrl = `/c/${slug}/post/${post.id}`;
+
   return (
-    <Link to={`/c/${slug}/post/${post.id}`}>
-      <article
-        className={cn(
-          "rounded-lg border border-border/60 bg-card px-3 py-2.5 transition-colors hover:border-border hover:bg-muted/30",
-          className
-        )}
-      >
+    <article
+      className={cn(
+        "relative rounded-lg border border-border/60 bg-card px-3 py-2.5 transition-colors hover:border-border hover:bg-muted/30",
+        className
+      )}
+    >
+      <Link to={postUrl} className="block">
         <h3 className="text-sm font-medium line-clamp-1 text-foreground">
           {post.title}
         </h3>
@@ -71,7 +74,8 @@ export function PostCard({
             )}
           </span>
         </div>
-      </article>
-    </Link>
+      </Link>
+      <ShareCopyButton path={postUrl} className="absolute bottom-2 right-2" />
+    </article>
   );
 }

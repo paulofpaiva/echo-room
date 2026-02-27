@@ -3,6 +3,7 @@ import { BackLink } from "@/components/navigation/BackLink";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageCircle, Send } from "lucide-react";
+import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { usePost } from "@/hooks/usePost";
 import { useCommentCounts } from "@/hooks/useCommentCounts";
 import { useReplyCounts } from "@/hooks/useReplyCounts";
@@ -23,6 +24,7 @@ const BUCKET = "post-images";
 
 export function PostDetailPage() {
   const { slug, postId } = useParams<{ slug: string; postId: string }>();
+  const postUrl = slug && postId ? `/c/${slug}/post/${postId}` : "";
 
   const { data: post, isLoading, isError, error } = usePost(postId);
   const { data: commentCounts = {}, isLoading: isCommentCountsLoading } = useCommentCounts(post?.id ? [post.id] : []);
@@ -108,13 +110,16 @@ export function PostDetailPage() {
             </div>
           );
         })()}
-        <p className="mt-2 flex items-center gap-1 text-xs text-muted-foreground" title="Comments">
-          <MessageCircle className="h-3 w-3" />
-          {isCommentCountsLoading ? (
-            <Skeleton className="h-3 w-5 inline-block" />
-          ) : (
-            <span>{commentCount}</span>
-          )}
+        <p className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1" title="Comments">
+            <MessageCircle className="h-3 w-3" />
+            {isCommentCountsLoading ? (
+              <Skeleton className="h-3 w-5 inline-block" />
+            ) : (
+              <span>{commentCount}</span>
+            )}
+          </span>
+          {postUrl && <ShareCopyButton path={postUrl} />}
         </p>
       </div>
 
