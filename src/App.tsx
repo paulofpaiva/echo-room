@@ -10,6 +10,7 @@ import { SearchPage } from "@/pages/SearchPage";
 import { NewsPage } from "@/pages/NewsPage";
 import { NewsDetailPage } from "@/pages/NewsDetailPage";
 import { NewsCommentDetailPage } from "@/pages/NewsCommentDetailPage";
+import { CommunitiesPage } from "@/pages/CommunitiesPage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/communities" element={<CommunitiesPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/news" element={<NewsPage />} />
           <Route path="/news/:id" element={<NewsDetailPage />} />
