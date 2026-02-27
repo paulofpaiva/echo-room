@@ -21,3 +21,14 @@ as $$
   where post_id = any(p_post_ids)
   group by post_id;
 $$;
+
+-- Post count per community (for display on home community cards)
+create or replace function get_community_post_counts()
+returns table(community_id uuid, post_count bigint)
+language sql
+stable
+as $$
+  select community_id, count(*)::bigint as post_count
+  from posts
+  group by community_id;
+$$;

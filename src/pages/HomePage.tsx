@@ -1,15 +1,16 @@
-import { Link } from "react-router-dom";
 import { useCommunities } from "@/hooks/useCommunities";
+import { useCommunityPostCounts } from "@/hooks/useCommunityPostCounts";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { CommunityCard } from "@/components/community/CommunityCard";
 
 export function HomePage() {
   const { data: communities, isLoading, isError, error } = useCommunities();
+  const { data: postCounts = {} } = useCommunityPostCounts();
 
   if (isLoading) {
     return (
@@ -33,24 +34,27 @@ export function HomePage() {
 
   return (
     <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>What is Echo Room</CardTitle>
+          <CardDescription className="text-sm mt-1 leading-relaxed">
+            Echo Room is an anonymous imageboard-style community. Post and
+            comment without accounts—your identity is a short fingerprint so
+            you stay anonymous but recognizable in a thread. Browse by
+            community, vote on posts and comments, and expand replies in
+            nested threads. No sign-up required.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
       <h1 className="text-2xl font-semibold">Communities</h1>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {(communities ?? []).map((community) => (
-          <Link key={community.id} to={`/c/${community.slug}`}>
-            <Card className="transition-colors hover:bg-muted/50 cursor-pointer h-full">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">/c/{community.slug}</CardTitle>
-                <CardDescription className="line-clamp-2">
-                  {community.description ?? community.name}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-xs text-muted-foreground">
-                  {community.name}
-                </p>
-              </CardContent>
-            </Card>
-          </Link>
+          <CommunityCard
+            key={community.id}
+            community={community}
+            postCount={postCounts[community.id] ?? 0}
+          />
         ))}
       </div>
     </div>

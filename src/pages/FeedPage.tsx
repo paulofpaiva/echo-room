@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Link, useParams, Navigate } from "react-router-dom";
-import { usePosts } from "@/hooks/usePosts";
+import { useEffect } from "react";
+import { Link, useParams, useSearchParams, Navigate } from "react-router-dom";
+import { usePostsFeed } from "@/hooks/usePostsFeed";
 import { useCommunities } from "@/hooks/useCommunities";
 import { useCommentCounts } from "@/hooks/useCommentCounts";
 import { PostCard } from "@/components/post/PostCard";
@@ -8,11 +8,38 @@ import { Button } from "@/components/ui/button";
 
 export function FeedPage() {
   const { slug } = useParams<{ slug: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageFromUrl = Math.max(1, Number(searchParams.get("page")) || 1);
   const communitySlug = slug ?? "";
-  const [page, setPage] = useState(1);
 
   const { data: communitiesData } = useCommunities();
-  const { data, isLoading, isError, error } = usePosts(communitySlug, page);
+  const {
+    posts,
+    data,
+    isLoading,
+    isError,
+    error,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = usePostsFeed(communitySlug);
+  const postIds = posts.map((p) => p.id);
+  const { data: commentCounts = {} } = useCommentCounts(postIds);
+
+  const pageCount = data?.pages.length ?? 0;
+
+  // Sync URL when we have more pages (e.g. after Load more)
+  useEffect(() => {
+    if (pageCount >= 1 && pageCount !== pageFromUrl) {
+      setSearchParams({ page: String(pageCount) }, { replace: true });
+    }
+  }, [pageCount, pageFromUrl, setSearchParams]);
+
+  // On mount with ?page=N > 1, catch up by fetching more pages
+  useEffect(() => {
+    if (pageCount >= pageFromUrl || !hasNextPage || isFetchingNextPage) return;
+    void fetchNextPage();
+  }, [pageFromUrl, pageCount, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (!slug) {
     return <Navigate to="/" replace />;
@@ -24,7 +51,8 @@ export function FeedPage() {
     return <Navigate to="/" replace />;
   }
 
-  if (isLoading) {
+  const isInitialLoading = isLoading && posts.length === 0;
+  if (isInitialLoading) {
     return (
       <div className="space-y-4">
         <h1 className="text-2xl font-semibold">Feed</h1>
@@ -43,10 +71,6 @@ export function FeedPage() {
       </div>
     );
   }
-
-  const { posts, hasMore } = data ?? { posts: [], hasMore: false };
-  const postIds = posts.map((p) => p.id);
-  const { data: commentCounts = {} } = useCommentCounts(postIds);
 
   return (
     <div className="space-y-6">
@@ -70,19 +94,17 @@ export function FeedPage() {
             />
           ))
         )}
-      </div>
-      <div className="flex gap-2">
-        {page > 1 && (
-          <Button variant="outline" onClick={() => setPage((p) => p - 1)}>
-            Previous
-          </Button>
-        )}
-        {hasMore && (
-          <Button variant="outline" onClick={() => setPage((p) => p + 1)}>
-            Next
-          </Button>
+        {isFetchingNextPage && (
+          <p className="py-2 text-center text-sm text-muted-foreground">
+            Loading more…
+          </p>
         )}
       </div>
+      {hasNextPage && !isFetchingNextPage && (
+        <Button variant="outline" onClick={() => void fetchNextPage()}>
+          Load more
+        </Button>
+      )}
     </div>
   );
 }

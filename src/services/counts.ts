@@ -30,3 +30,19 @@ export async function fetchReplyCounts(
   }
   return map;
 }
+
+export async function fetchCommunityPostCounts(): Promise<
+  Record<string, number>
+> {
+  const { data, error } = await supabase.rpc("get_community_post_counts");
+  if (error) throw error;
+  const rows = (data ?? []) as {
+    community_id: string;
+    post_count: number;
+  }[];
+  const map: Record<string, number> = {};
+  for (const row of rows) {
+    map[row.community_id] = Number(row.post_count);
+  }
+  return map;
+}
