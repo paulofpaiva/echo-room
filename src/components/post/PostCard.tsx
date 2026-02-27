@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { Post } from "@/types/post";
+import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
 import { cn } from "@/lib/utils";
 
 interface PostCardProps {
@@ -28,9 +29,12 @@ export function PostCard({ post, communitySlug, className }: PostCardProps) {
       >
         <CardHeader className="pb-2">
           <CardTitle className="text-lg line-clamp-1">{post.title}</CardTitle>
-          <CardDescription className="text-xs">
-            {new Date(post.created_at).toLocaleString()} · ↑ {post.upvotes} ↓{" "}
-            {post.downvotes}
+          <CardDescription className="text-xs flex flex-wrap items-center gap-2">
+            <FingerprintBadge anonFingerprint={post.anon_fingerprint} />
+            <span>
+              {new Date(post.created_at).toLocaleString()} · ↑ {post.upvotes} ↓{" "}
+              {post.downvotes}
+            </span>
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
 import { useComments } from "@/hooks/useComments";
 import type { Comment } from "@/types/comment";
 import { cn } from "@/lib/utils";
@@ -36,9 +37,12 @@ export function CommentCard({ comment, postId, depth = 0 }: CommentCardProps) {
       >
         <CardHeader className="py-3 px-4">
           <p className="text-sm font-medium leading-snug">{comment.content}</p>
-          <p className="text-xs text-muted-foreground">
-            {new Date(comment.created_at).toLocaleString()} · ↑ {comment.upvotes} ↓ {comment.downvotes}
-            {expanded ? " · Click to collapse" : " · Click to see replies"}
+          <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-2">
+            <FingerprintBadge anonFingerprint={comment.anon_fingerprint} />
+            <span>
+              {new Date(comment.created_at).toLocaleString()} · ↑ {comment.upvotes} ↓ {comment.downvotes}
+              {expanded ? " · Click to collapse" : " · Click to see replies"}
+            </span>
           </p>
         </CardHeader>
       </Card>

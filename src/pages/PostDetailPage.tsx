@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { usePost } from "@/hooks/usePost";
 import { CommentList } from "@/components/comment/CommentList";
+import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
 
 export function PostDetailPage() {
   const { slug, postId } = useParams<{ slug: string; postId: string }>();
@@ -51,9 +52,12 @@ export function PostDetailPage() {
       <Card>
         <CardHeader>
           <CardTitle>{post.title}</CardTitle>
-          <CardDescription>
-            {new Date(post.created_at).toLocaleString()} · ↑ {post.upvotes} ↓{" "}
-            {post.downvotes}
+          <CardDescription className="flex flex-wrap items-center gap-2">
+            <FingerprintBadge anonFingerprint={post.anon_fingerprint} />
+            <span>
+              {new Date(post.created_at).toLocaleString()} · ↑ {post.upvotes} ↓{" "}
+              {post.downvotes}
+            </span>
           </CardDescription>
         </CardHeader>
         <CardContent>
