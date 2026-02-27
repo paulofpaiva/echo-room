@@ -25,7 +25,7 @@ export function FeedPage() {
     isFetchingNextPage,
   } = usePostsFeed(communitySlug);
   const postIds = posts.map((p) => p.id);
-  const { data: commentCounts = {} } = useCommentCounts(postIds);
+  const { data: commentCounts = {}, isLoading: isCommentCountsLoading } = useCommentCounts(postIds);
 
   const pageCount = data?.pages.length ?? 0;
 
@@ -87,6 +87,7 @@ export function FeedPage() {
                 post={post}
                 communitySlug={communitySlug}
                 commentCount={commentCounts[post.id] ?? 0}
+                commentCountLoading={isCommentCountsLoading}
               />
             </div>
           ))

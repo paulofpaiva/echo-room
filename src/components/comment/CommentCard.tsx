@@ -1,93 +1,39 @@
-import { useState } from "react";
-import { Card, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
-import { useComments } from "@/hooks/useComments";
 import type { Comment } from "@/types/comment";
-import { cn } from "@/lib/utils";
 
 interface CommentCardProps {
   comment: Comment;
   postId: string;
   replyCounts?: Record<string, number>;
-  depth?: number;
+  slug: string;
+  returnTo: string;
 }
 
 export function CommentCard({
   comment,
   postId,
   replyCounts = {},
-  depth = 0,
+  slug,
+  returnTo,
 }: CommentCardProps) {
   const replyCount = replyCounts[comment.id] ?? 0;
-  const [expanded, setExpanded] = useState(false);
-  const [repliesPage, setRepliesPage] = useState(1);
-
-  const { data, isLoading, isFetching } = useComments(
-    postId,
-    comment.id,
-    repliesPage,
-    expanded
-  );
-
-  const replies = data?.comments ?? [];
-  const hasMore = data?.hasMore ?? false;
+  const commentUrl = `/c/${slug}/post/${postId}/comment/${comment.id}`;
 
   return (
-    <div className={cn("flex flex-col gap-2", depth > 0 && "ml-4 border-l-2 border-muted pl-3")}>
-      <Card
-        className={cn(
-          "cursor-pointer transition-colors hover:bg-muted/50",
-          expanded && "ring-1 ring-primary/20"
-        )}
-        onClick={() => setExpanded((e) => !e)}
-      >
-        <CardHeader className="py-3 px-4">
-          <p className="text-sm font-medium leading-snug">{comment.content}</p>
-          <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-2">
-            <FingerprintBadge anonFingerprint={comment.anon_fingerprint} />
-            <span>
-              {new Date(comment.created_at).toLocaleString()}
-              · {replyCount} repl{replyCount === 1 ? "y" : "ies"}
-              {expanded ? " · Click to collapse" : " · Click to see replies"}
-            </span>
-          </p>
-        </CardHeader>
-      </Card>
-
-      {expanded && (
-        <div className="space-y-2">
-          {isLoading ? (
-            <p className="text-xs text-muted-foreground pl-2">Loading replies…</p>
-          ) : (
-            <>
-              {replies.map((reply) => (
-                <CommentCard
-                  key={reply.id}
-                  comment={reply}
-                  postId={postId}
-                  replyCounts={replyCounts}
-                  depth={depth + 1}
-                />
-              ))}
-              {hasMore && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="ml-2"
-                  disabled={isFetching}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setRepliesPage((p) => p + 1);
-                  }}
-                >
-                  {isFetching ? "Loading…" : "More replies"}
-                </Button>
-              )}
-            </>
-          )}
-        </div>
-      )}
-    </div>
+    <Link
+      to={commentUrl}
+      state={{ from: returnTo }}
+      className="block py-3 border-b border-border/40 last:border-b-0"
+    >
+      <p className="text-xs text-muted-foreground">
+        <FingerprintBadge anonFingerprint={comment.anon_fingerprint} />
+      </p>
+      <p className="mt-1 text-sm text-foreground leading-snug">{comment.content}</p>
+      <p className="mt-1 text-xs text-muted-foreground">
+        <span>{new Date(comment.created_at).toLocaleString()}</span>
+        <span> · {replyCount} repl{replyCount === 1 ? "y" : "ies"}</span>
+      </p>
+    </Link>
   );
 }

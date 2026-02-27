@@ -31,3 +31,17 @@ export async function fetchComments(
   const comments = hasMore ? raw.slice(0, PAGE_SIZE) : raw;
   return { comments, hasMore };
 }
+
+export async function fetchCommentById(commentId: string): Promise<Comment | null> {
+  const { data, error } = await supabase
+    .from("comments")
+    .select("*")
+    .eq("id", commentId)
+    .single();
+
+  if (error) {
+    if (error.code === "PGRST116") return null;
+    throw error;
+  }
+  return data as Comment;
+}

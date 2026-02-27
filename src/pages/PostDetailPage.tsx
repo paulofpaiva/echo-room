@@ -5,15 +5,17 @@ import { useCommentCounts } from "@/hooks/useCommentCounts";
 import { useReplyCounts } from "@/hooks/useReplyCounts";
 import { CommentList } from "@/components/comment/CommentList";
 import { PostDetailSkeleton } from "@/components/skeleton/PostDetailSkeleton";
+import { Skeleton } from "@/components/skeleton/Skeleton";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
 
 export function PostDetailPage() {
   const { slug, postId } = useParams<{ slug: string; postId: string }>();
   const location = useLocation();
   const returnTo = (location.state as { from?: string } | null)?.from ?? `/c/${slug}`;
+  const postPageUrl = `/c/${slug}/post/${postId}`;
 
   const { data: post, isLoading, isError, error } = usePost(postId);
-  const { data: commentCounts = {} } = useCommentCounts(post?.id ? [post.id] : []);
+  const { data: commentCounts = {}, isLoading: isCommentCountsLoading } = useCommentCounts(post?.id ? [post.id] : []);
   const { data: replyCounts = {} } = useReplyCounts(post?.id ?? "", !!post);
   const commentCount = post ? (commentCounts[post.id] ?? 0) : 0;
 
@@ -58,13 +60,17 @@ export function PostDetailPage() {
         </p>
         <p className="mt-2 flex items-center gap-1 text-xs text-muted-foreground" title="Comments">
           <MessageCircle className="h-3 w-3" />
-          <span>{commentCount} comment{commentCount !== 1 ? "s" : ""}</span>
+          {isCommentCountsLoading ? (
+            <Skeleton className="h-3 w-16 inline-block" />
+          ) : (
+            <span>{commentCount} comment{commentCount !== 1 ? "s" : ""}</span>
+          )}
         </p>
       </div>
 
-      <section>
+      <section className="border-t border-border pt-4 mt-2">
         <h2 className="text-lg font-semibold mb-3">Comments</h2>
-        <CommentList postId={post.id} replyCounts={replyCounts} />
+        <CommentList postId={post.id} slug={slug} returnTo={postPageUrl} replyCounts={replyCounts} />
       </section>
     </div>
   );

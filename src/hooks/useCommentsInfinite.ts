@@ -24,3 +24,30 @@ export function useCommentsInfinite(postId: string, enabled: boolean) {
     isFetchingNextPage: result.isFetchingNextPage,
   };
 }
+
+export function useRepliesInfinite(
+  postId: string,
+  parentId: string | null,
+  enabled: boolean
+) {
+  const result = useInfiniteQuery({
+    queryKey: ["replies-infinite", postId, parentId],
+    queryFn: ({ pageParam }) =>
+      fetchComments(postId, parentId, pageParam as number),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.hasMore ? allPages.length + 1 : undefined,
+    enabled: !!postId && !!parentId && enabled,
+  });
+
+  const comments: Comment[] =
+    result.data?.pages.flatMap((p) => p.comments) ?? [];
+
+  return {
+    ...result,
+    comments,
+    hasNextPage: result.hasNextPage ?? false,
+    fetchNextPage: result.fetchNextPage,
+    isFetchingNextPage: result.isFetchingNextPage,
+  };
+}

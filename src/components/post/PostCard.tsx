@@ -2,12 +2,14 @@ import { Link, useLocation } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
 import type { Post } from "@/types/post";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
+import { Skeleton } from "@/components/skeleton/Skeleton";
 import { cn } from "@/lib/utils";
 
 interface PostCardProps {
   post: Post;
   communitySlug: string;
   commentCount?: number;
+  commentCountLoading?: boolean;
   className?: string;
 }
 
@@ -15,6 +17,7 @@ export function PostCard({
   post,
   communitySlug,
   commentCount = 0,
+  commentCountLoading = false,
   className,
 }: PostCardProps) {
   const slug = post.community?.slug ?? communitySlug;
@@ -42,7 +45,11 @@ export function PostCard({
         <div className="mt-2 flex items-center text-muted-foreground">
           <span className="flex items-center gap-1 text-xs" title="Comments">
             <MessageCircle className="h-3 w-3" />
-            <span>{commentCount}</span>
+            {commentCountLoading ? (
+              <Skeleton className="h-3 w-5 inline-block" />
+            ) : (
+              <span>{commentCount}</span>
+            )}
           </span>
         </div>
       </article>

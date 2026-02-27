@@ -1,13 +1,16 @@
 import { useCommentsInfinite } from "@/hooks/useCommentsInfinite";
 import { CommentCard } from "./CommentCard";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/skeleton/Skeleton";
 
 interface CommentListProps {
   postId: string;
+  slug: string;
+  returnTo: string;
   replyCounts?: Record<string, number>;
 }
 
-export function CommentList({ postId, replyCounts = {} }: CommentListProps) {
+export function CommentList({ postId, slug, returnTo, replyCounts = {} }: CommentListProps) {
   const {
     comments,
     isLoading,
@@ -19,7 +22,17 @@ export function CommentList({ postId, replyCounts = {} }: CommentListProps) {
   } = useCommentsInfinite(postId, true);
 
   if (isLoading) {
-    return <p className="text-muted-foreground text-sm">Loading comments…</p>;
+    return (
+      <div className="space-y-0">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="py-3 border-b border-border/40">
+            <Skeleton className="h-3 w-16 rounded-full" />
+            <Skeleton className="mt-1 h-4 w-full" />
+            <Skeleton className="mt-1 h-3 w-24" />
+          </div>
+        ))}
+      </div>
+    );
   }
 
   if (isError) {
@@ -35,13 +48,15 @@ export function CommentList({ postId, replyCounts = {} }: CommentListProps) {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-0">
       {comments.map((comment) => (
         <CommentCard
           key={comment.id}
           comment={comment}
           postId={postId}
           replyCounts={replyCounts}
+          slug={slug}
+          returnTo={returnTo}
         />
       ))}
       {hasNextPage && (
