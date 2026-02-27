@@ -1,13 +1,19 @@
 import { Link, useParams, useLocation, Navigate } from "react-router-dom";
-import { MessageCircle } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MessageCircle, Send } from "lucide-react";
 import { usePost } from "@/hooks/usePost";
 import { useCommentCounts } from "@/hooks/useCommentCounts";
 import { useReplyCounts } from "@/hooks/useReplyCounts";
+import { useCreateComment } from "@/hooks/useCreateComment";
 import { CommentList } from "@/components/comment/CommentList";
 import { PostDetailSkeleton } from "@/components/skeleton/PostDetailSkeleton";
 import { Skeleton } from "@/components/skeleton/Skeleton";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
+import { getOrCreateAnonFingerprint } from "@/lib/anon-fingerprint";
+import { createCommentSchema, type CreateCommentFormValues } from "@/schemas/createComment";
 import { cn } from "@/lib/utils";
 
 const BUCKET = "post-images";
@@ -22,6 +28,30 @@ export function PostDetailPage() {
   const { data: commentCounts = {}, isLoading: isCommentCountsLoading } = useCommentCounts(post?.id ? [post.id] : []);
   const { data: replyCounts = {} } = useReplyCounts(post?.id ?? "", !!post);
   const commentCount = post ? (commentCounts[post.id] ?? 0) : 0;
+  const createComment = useCreateComment(post?.id ?? "");
+
+  const {
+    register,
+    handleSubmit: rhfHandleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<CreateCommentFormValues>({
+    resolver: zodResolver(createCommentSchema),
+    defaultValues: { content: "" },
+  });
+
+  const onSubmitComment = (data: CreateCommentFormValues) => {
+    if (!post?.id) return;
+    createComment
+      .mutateAsync({
+        postId: post.id,
+        parentId: null,
+        content: data.content,
+        anonFingerprint: getOrCreateAnonFingerprint() || null,
+      })
+      .then(() => reset())
+      .catch(() => {});
+  };
 
   if (!slug || !postId) {
     return <Navigate to="/" replace />;
@@ -54,7 +84,7 @@ export function PostDetailPage() {
       </Link>
 
       <div>
-        <h2 className="text-sm font-medium text-foreground">{post.title}</h2>
+        <h1 className="text-2xl font-semibold text-foreground">{post.title}</h1>
         <p className="mt-1 text-xs text-muted-foreground flex flex-wrap items-center gap-2">
           <FingerprintBadge anonFingerprint={post.anon_fingerprint} />
           <span>{new Date(post.created_at).toLocaleString()}</span>
@@ -92,6 +122,38 @@ export function PostDetailPage() {
 
       <section className="border-t border-border pt-4 mt-2">
         <h2 className="text-lg font-semibold mb-3">Comments</h2>
+        <form onSubmit={rhfHandleSubmit(onSubmitComment)} className="mb-4 space-y-2">
+          <div className="flex gap-2 items-center">
+            <textarea
+              {...register("content")}
+              rows={3}
+              placeholder="Write a comment..."
+              className={cn(
+                "flex-1 min-w-0 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                errors.content && "border-destructive focus-visible:ring-destructive"
+              )}
+            />
+            <Button
+              type="submit"
+              disabled={createComment.isPending}
+              size="icon"
+              className="shrink-0 rounded-full"
+              aria-label="Post comment"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+          {errors.content && (
+            <p className="text-sm text-destructive">{errors.content.message}</p>
+          )}
+          {createComment.isError && (
+            <p className="text-sm text-destructive">
+              {createComment.error instanceof Error
+                ? createComment.error.message
+                : "Failed to post comment"}
+            </p>
+          )}
+        </form>
         <CommentList postId={post.id} slug={slug} returnTo={postPageUrl} replyCounts={replyCounts} />
       </section>
     </div>

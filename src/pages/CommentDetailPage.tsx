@@ -1,13 +1,19 @@
 import { Link, useParams, useLocation, Navigate } from "react-router-dom";
-import { MessageCircle } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MessageCircle, Send } from "lucide-react";
 import { usePost } from "@/hooks/usePost";
 import { useComment } from "@/hooks/useComment";
 import { useRepliesInfinite } from "@/hooks/useCommentsInfinite";
 import { useReplyCounts } from "@/hooks/useReplyCounts";
+import { useCreateComment } from "@/hooks/useCreateComment";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
 import { CommentCard } from "@/components/comment/CommentCard";
 import { CommentDetailSkeleton } from "@/components/skeleton/CommentDetailSkeleton";
 import { Button } from "@/components/ui/button";
+import { getOrCreateAnonFingerprint } from "@/lib/anon-fingerprint";
+import { createCommentSchema, type CreateCommentFormValues } from "@/schemas/createComment";
+import { cn } from "@/lib/utils";
 
 export function CommentDetailPage() {
   const { slug, postId, commentId } = useParams<{
@@ -27,6 +33,31 @@ export function CommentDetailPage() {
     fetchNextPage,
     isFetchingNextPage,
   } = useRepliesInfinite(post?.id ?? "", commentId ?? null, !!post && !!commentId);
+
+  const createReply = useCreateComment(post?.id ?? "");
+
+  const {
+    register,
+    handleSubmit: rhfHandleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<CreateCommentFormValues>({
+    resolver: zodResolver(createCommentSchema),
+    defaultValues: { content: "" },
+  });
+
+  const onSubmitReply = (data: CreateCommentFormValues) => {
+    if (!post?.id || !comment?.id) return;
+    createReply
+      .mutateAsync({
+        postId: post.id,
+        parentId: comment.id,
+        content: data.content,
+        anonFingerprint: getOrCreateAnonFingerprint() || null,
+      })
+      .then(() => reset())
+      .catch(() => {});
+  };
 
   const isLoading = postLoading || commentLoading;
   const isError = postError || commentError;
@@ -56,7 +87,7 @@ export function CommentDetailPage() {
           {error instanceof Error ? error.message : "Comment not found."}
         </p>
         <Link to={returnTo} className="text-primary text-sm underline">
-          ← Back to post
+          ← Back
         </Link>
       </div>
     );
@@ -70,7 +101,7 @@ export function CommentDetailPage() {
         to={returnTo}
         className="text-sm text-muted-foreground hover:text-foreground"
       >
-        ← Back to post
+        ← Back
       </Link>
 
       <div>
@@ -85,33 +116,71 @@ export function CommentDetailPage() {
         </p>
         <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground" title="Replies">
           <MessageCircle className="h-3 w-3" />
-          <span>{replyCount} repl{replyCount === 1 ? "y" : "ies"}</span>
+          <span>{replyCount}</span>
         </p>
       </div>
 
       <section className="border-t border-border pt-4 mt-2">
         <h2 className="text-lg font-semibold mb-3">Replies</h2>
-        <div className="space-y-0">
-          {replies.map((reply) => (
-            <CommentCard
-              key={reply.id}
-              comment={reply}
-              postId={post.id}
-              replyCounts={replyCounts}
-              slug={slug}
-              returnTo={currentCommentUrl}
+        <form onSubmit={rhfHandleSubmit(onSubmitReply)} className="mb-4 space-y-2">
+          <div className="flex gap-2 items-center">
+            <textarea
+              {...register("content")}
+              rows={3}
+              placeholder="Write a reply..."
+              className={cn(
+                "flex-1 min-w-0 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                errors.content && "border-destructive focus-visible:ring-destructive"
+              )}
             />
-          ))}
-          {hasNextPage && (
             <Button
-              variant="outline"
-              size="sm"
-              className="w-full mt-2"
-              disabled={isFetchingNextPage}
-              onClick={() => fetchNextPage()}
+              type="submit"
+              disabled={createReply.isPending}
+              size="icon"
+              className="shrink-0 rounded-full"
+              aria-label="Post reply"
             >
-              {isFetchingNextPage ? "Loading…" : "Load more"}
+              <Send className="h-4 w-4" />
             </Button>
+          </div>
+          {errors.content && (
+            <p className="text-sm text-destructive">{errors.content.message}</p>
+          )}
+          {createReply.isError && (
+            <p className="text-sm text-destructive">
+              {createReply.error instanceof Error
+                ? createReply.error.message
+                : "Failed to post reply"}
+            </p>
+          )}
+        </form>
+        <div className="space-y-0">
+          {replies.length === 0 ? (
+            <p className="text-muted-foreground text-sm">No replies yet.</p>
+          ) : (
+            <>
+              {replies.map((reply) => (
+                <CommentCard
+                  key={reply.id}
+                  comment={reply}
+                  postId={post.id}
+                  replyCounts={replyCounts}
+                  slug={slug}
+                  returnTo={currentCommentUrl}
+                />
+              ))}
+              {hasNextPage && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full mt-2"
+                  disabled={isFetchingNextPage}
+                  onClick={() => fetchNextPage()}
+                >
+                  {isFetchingNextPage ? "Loading…" : "Load more"}
+                </Button>
+              )}
+            </>
           )}
         </div>
       </section>

@@ -14,7 +14,7 @@ export function CommentDetailSkeleton({ returnTo }: CommentDetailSkeletonProps) 
         to={returnTo}
         className="text-sm text-muted-foreground hover:text-foreground"
       >
-        ← Back to post
+        ← Back
       </Link>
 
       <div>
