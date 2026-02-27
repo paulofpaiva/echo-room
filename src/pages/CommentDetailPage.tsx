@@ -13,6 +13,7 @@ import { CommentDetailSkeleton } from "@/components/skeleton/CommentDetailSkelet
 import { Button } from "@/components/ui/button";
 import { useCountryCode } from "@/hooks/useCountryCode";
 import { getOrCreateAnonFingerprint } from "@/lib/anon-fingerprint";
+import { getCountryCodeForSubmit } from "@/services/geo";
 import { createCommentSchema, type CreateCommentFormValues } from "@/schemas/createComment";
 import { cn } from "@/lib/utils";
 
@@ -48,18 +49,21 @@ export function CommentDetailPage() {
     defaultValues: { content: "" },
   });
 
-  const onSubmitReply = (data: CreateCommentFormValues) => {
+  const onSubmitReply = async (data: CreateCommentFormValues) => {
     if (!post?.id || !comment?.id) return;
-    createReply
-      .mutateAsync({
+    const resolvedCountryCode = countryCode ?? (await getCountryCodeForSubmit());
+    try {
+      await createReply.mutateAsync({
         postId: post.id,
         parentId: comment.id,
         content: data.content,
         anonFingerprint: getOrCreateAnonFingerprint() || null,
-        countryCode: countryCode ?? null,
-      })
-      .then(() => reset())
-      .catch(() => {});
+        countryCode: resolvedCountryCode,
+      });
+      reset();
+    } catch {
+      // mutation error handled by hook
+    }
   };
 
   const isLoading = postLoading || commentLoading;

@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { useCountryCode } from "@/hooks/useCountryCode";
 import { getOrCreateAnonFingerprint } from "@/lib/anon-fingerprint";
+import { getCountryCodeForSubmit } from "@/services/geo";
 import { createCommentSchema, type CreateCommentFormValues } from "@/schemas/createComment";
 import { cn } from "@/lib/utils";
 
@@ -42,18 +43,21 @@ export function PostDetailPage() {
     defaultValues: { content: "" },
   });
 
-  const onSubmitComment = (data: CreateCommentFormValues) => {
+  const onSubmitComment = async (data: CreateCommentFormValues) => {
     if (!post?.id) return;
-    createComment
-      .mutateAsync({
+    const resolvedCountryCode = countryCode ?? (await getCountryCodeForSubmit());
+    try {
+      await createComment.mutateAsync({
         postId: post.id,
         parentId: null,
         content: data.content,
         anonFingerprint: getOrCreateAnonFingerprint() || null,
-        countryCode: countryCode ?? null,
-      })
-      .then(() => reset())
-      .catch(() => {});
+        countryCode: resolvedCountryCode,
+      });
+      reset();
+    } catch {
+      // mutation error handled by hook
+    }
   };
 
   if (!slug || !postId) {

@@ -48,3 +48,26 @@ export function setCachedCountryCode(code: string | null): void {
     else sessionStorage.removeItem(CACHE_KEY);
   }
 }
+
+const SUBMIT_TIMEOUT_MS = 2000;
+
+/**
+ * Returns the country code for use when submitting a post or comment.
+ * Uses cached value if available; otherwise fetches with a short timeout so
+ * the UI does not block for long.
+ */
+export async function getCountryCodeForSubmit(): Promise<string | null> {
+  const fromCache = getCachedCountryCode();
+  if (fromCache) return fromCache;
+  try {
+    const code = await Promise.race([
+      fetchCountryCode(),
+      new Promise<string | null>((resolve) =>
+        setTimeout(() => resolve(null), SUBMIT_TIMEOUT_MS)
+      ),
+    ]);
+    return code ?? null;
+  } catch {
+    return null;
+  }
+}

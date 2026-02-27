@@ -8,6 +8,7 @@ import { useCreateNewsComment } from "@/hooks/useCreateNewsComment";
 import { NewsCommentList } from "@/components/news/NewsCommentList";
 import { useCountryCode } from "@/hooks/useCountryCode";
 import { getOrCreateAnonFingerprint } from "@/lib/anon-fingerprint";
+import { getCountryCodeForSubmit } from "@/services/geo";
 import { createCommentSchema, type CreateCommentFormValues } from "@/schemas/createComment";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -33,18 +34,21 @@ export function NewsDetailPage() {
     defaultValues: { content: "" },
   });
 
-  const onSubmitComment = (data: CreateCommentFormValues) => {
+  const onSubmitComment = async (data: CreateCommentFormValues) => {
     if (!news?.id) return;
-    createComment
-      .mutateAsync({
+    const resolvedCountryCode = countryCode ?? (await getCountryCodeForSubmit());
+    try {
+      await createComment.mutateAsync({
         newsId: news.id,
         parentId: null,
         content: data.content,
         anonFingerprint: getOrCreateAnonFingerprint() || null,
-        countryCode: countryCode ?? null,
-      })
-      .then(() => reset())
-      .catch(() => {});
+        countryCode: resolvedCountryCode,
+      });
+      reset();
+    } catch {
+      // mutation error handled by hook
+    }
   };
 
   if (!id) return <Navigate to="/news" replace />;
