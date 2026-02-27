@@ -1,11 +1,5 @@
 import { useCommunities } from "@/hooks/useCommunities";
 import { useCommunityPostCounts } from "@/hooks/useCommunityPostCounts";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { CommunityList } from "@/components/community/CommunityList";
 import { CommunityListSkeleton } from "@/components/skeleton/CommunityListSkeleton";
 import { LatestPostsSection } from "@/components/home/LatestPostsSection";
@@ -28,18 +22,12 @@ export function HomePage() {
 
   return (
     <div className="space-y-6">
-      <Card className="border shadow-none overflow-hidden">
-        <div className="bg-primary px-3 py-2">
-          <CardTitle className="text-sm font-medium text-primary-foreground">
-            Welcome to echoroom
-          </CardTitle>
-        </div>
-        <CardHeader className="space-y-0 px-3 py-2">
-          <CardDescription className="text-xs leading-snug">
-            Pick a community below to browse and join the conversation.
-          </CardDescription>
-        </CardHeader>
-      </Card>
+      <div>
+        <h1 className="text-2xl font-semibold">Welcome to echoroom</h1>
+        <p className="text-muted-foreground text-sm mt-1">
+          Pick a community below to browse and join the conversation.
+        </p>
+      </div>
 
       {isLoading ? (
         <CommunityListSkeleton />
