@@ -3,6 +3,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- ESM URL resolved at runtime by Deno
 // @ts-expect-error -- ESM URL resolved at runtime by Deno
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { getCountryCodeFromRequest } from "../_shared/country.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -55,15 +56,19 @@ async function handlePost(req: Request): Promise<Response> {
       );
     }
 
+    const resolvedCountryCode =
+      normalizeCountryCode(country_code) ?? (await getCountryCodeFromRequest(req));
+    const insertRow = {
+      title: title.trim(),
+      content: content.trim(),
+      community_id: community.id,
+      anon_fingerprint: anon_fingerprint?.trim() || null,
+      country_code: resolvedCountryCode,
+    };
+
     const { data: post, error: postError } = await supabase
       .from("posts")
-      .insert({
-        title: title.trim(),
-        content: content.trim(),
-        community_id: community.id,
-        anon_fingerprint: anon_fingerprint?.trim() || null,
-        country_code: normalizeCountryCode(country_code),
-      })
+      .insert(insertRow)
       .select("id")
       .single();
 
