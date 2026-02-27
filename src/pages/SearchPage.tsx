@@ -35,6 +35,7 @@ export function SearchPage() {
   } = useSearchPosts(q, order);
 
   const results = data?.pages.flatMap((p) => p.results) ?? [];
+  const hasSearched = q.trim().length > 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,7 +94,11 @@ export function SearchPage() {
         </p>
       )}
 
-      {!isError && (
+      {!hasSearched ? (
+        <p className="text-sm text-muted-foreground">
+          Enter a search term above to find posts.
+        </p>
+      ) : !isError ? (
         <>
           {isLoading ? (
             <ul className="space-y-2" aria-busy="true">
@@ -110,7 +115,7 @@ export function SearchPage() {
             </ul>
           ) : results.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              {q ? "No posts match your search." : "Enter a search term above."}
+              No posts match your search.
             </p>
           ) : (
             <>
@@ -157,7 +162,7 @@ export function SearchPage() {
             </>
           )}
         </>
-      )}
+      ) : null}
     </div>
   );
 }

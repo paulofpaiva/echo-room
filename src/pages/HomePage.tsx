@@ -7,7 +7,7 @@ import { NewsSection } from "@/components/home/NewsSection";
 import { TopCommentedPostsSection } from "@/components/home/TopCommentedPostsSection";
 
 export function HomePage() {
-  const { data: communities, isLoading, isError, error } = useCommunities();
+  const { data: communities, isLoading, isError, error } = useCommunities(5);
   const { data: postCounts = {} } = useCommunityPostCounts();
 
   if (isError) {
@@ -23,25 +23,36 @@ export function HomePage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Welcome to echoroom</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Pick a community below to browse and join the conversation.
-        </p>
-      </div>
+      <section className="rounded-lg border border-border p-4">
+        <div>
+          <h1 className="text-2xl font-semibold">Welcome to echoroom</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Pick a community below to browse and join the conversation.
+          </p>
+        </div>
+        <div className="mt-4">
+          {isLoading ? (
+            <CommunityListSkeleton />
+          ) : (
+            <CommunityList
+              communities={communities ?? []}
+              postCounts={postCounts}
+            />
+          )}
+        </div>
+      </section>
 
-      {isLoading ? (
-        <CommunityListSkeleton />
-      ) : (
-        <CommunityList
-          communities={communities ?? []}
-          postCounts={postCounts}
-        />
-      )}
+      <section className="rounded-lg border border-border p-4">
+        <LatestPostsSection />
+      </section>
 
-      <LatestPostsSection />
-      <TopCommentedPostsSection />
-      <NewsSection />
+      <section className="rounded-lg border border-border p-4">
+        <TopCommentedPostsSection />
+      </section>
+
+      <section className="rounded-lg border border-border p-4">
+        <NewsSection />
+      </section>
     </div>
   );
 }

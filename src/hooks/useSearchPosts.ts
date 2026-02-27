@@ -12,6 +12,6 @@ export function useSearchPosts(query: string, order: SearchOrder) {
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) =>
       lastPage.hasMore ? allPages.length + 1 : undefined,
-    enabled: true,
+    enabled: trimmed.length > 0,
   });
 }

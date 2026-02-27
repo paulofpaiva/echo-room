@@ -29,7 +29,7 @@ export function PostCardCompact({
       to={`/c/${slug}/post/${post.id}`}
       state={{ from: returnTo }}
       className={cn(
-        "block w-full min-w-0 rounded-lg border border-border/60 bg-card px-3 py-2 transition-colors hover:border-border hover:bg-muted/30",
+        "flex min-h-0 w-full min-w-0 flex-1 flex-col rounded-lg border border-border/60 bg-card px-3 py-2 transition-colors hover:border-border hover:bg-muted/30",
         className
       )}
     >
@@ -44,7 +44,7 @@ export function PostCardCompact({
           {post.title}
         </h3>
       </div>
-      <div className="mt-1 flex items-center justify-between gap-2 text-xs text-muted-foreground">
+      <div className="mt-auto pt-1 flex items-center justify-between gap-2 text-xs text-muted-foreground">
         <span>{new Date(post.created_at).toLocaleString()}</span>
         <span className="flex items-center gap-1 shrink-0">
           <MessageCircle className="h-3 w-3" />

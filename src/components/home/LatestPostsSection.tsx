@@ -53,9 +53,9 @@ export function LatestPostsSection() {
       ) : posts.length === 0 ? (
         <p className="text-sm text-muted-foreground">No posts yet.</p>
       ) : (
-        <ul className="grid grid-cols-12 gap-2">
+        <ul className="grid grid-cols-12 gap-2 items-stretch grid-rows-1">
           {posts.map((post) => (
-            <li key={post.id} className="min-w-0 col-span-12 sm:col-span-4">
+            <li key={post.id} className="flex min-h-0 min-w-0 col-span-12 sm:col-span-4">
               <PostCardCompact
                 post={post}
                 communitySlug={post.community?.slug ?? ""}

@@ -5,16 +5,22 @@ const PLACEHOLDER_POSTS = 4;
 
 interface FeedSkeletonProps {
   communitySlug: string;
+  returnTo?: string;
+  backLabel?: string;
 }
 
-export function FeedSkeleton({ communitySlug }: FeedSkeletonProps) {
+export function FeedSkeleton({
+  communitySlug,
+  returnTo = "/",
+  backLabel = "Back to home",
+}: FeedSkeletonProps) {
   return (
     <div className="space-y-6">
       <Link
-        to="/"
+        to={returnTo}
         className="text-sm text-muted-foreground hover:text-foreground"
       >
-        ← Back to communities
+        ← {backLabel}
       </Link>
       <h1 className="text-2xl font-semibold">/c/{communitySlug}</h1>
       <div className="space-y-4">
