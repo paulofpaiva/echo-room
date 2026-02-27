@@ -48,8 +48,8 @@ export function FeedPage() {
     return <Navigate to="/" replace />;
   }
 
-  const communityExists =
-    communitiesData?.some((c) => c.slug === communitySlug) ?? false;
+  const community = communitiesData?.find((c) => c.slug === communitySlug);
+  const communityExists = community != null;
   if (communitiesData && !communityExists) {
     return <Navigate to="/" replace />;
   }
@@ -73,8 +73,24 @@ export function FeedPage() {
   return (
     <div className="space-y-6">
       <BackLink />
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">/c/{communitySlug}</h1>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-semibold">/c/{communitySlug}</h1>
+          {community?.created_at && (
+            <p className="mt-1 text-sm text-muted-foreground">
+              Created {new Date(community.created_at).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          )}
+          {community?.description && (
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {community.description}
+            </p>
+          )}
+        </div>
         <Link
           to={`/c/${communitySlug}/post/new`}
           className="flex items-center gap-1.5 text-sm text-primary hover:underline"
