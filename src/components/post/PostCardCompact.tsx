@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { MessageCircle, Sparkles, TrendingUp } from "lucide-react";
 import type { Post } from "@/types/post";
+import { ReportButton } from "@/components/ui/report-button";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { cn } from "@/lib/utils";
 
@@ -51,7 +52,10 @@ export function PostCardCompact({
           </span>
         </div>
       </Link>
-      <ShareCopyButton path={postUrl} className="absolute bottom-1.5 right-1.5" />
+      <div className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5">
+        <ShareCopyButton path={postUrl} />
+        <ReportButton targetType="post" targetId={post.id} />
+      </div>
     </div>
   );
 }

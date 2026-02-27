@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
 import type { Post } from "@/types/post";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
+import { ReportButton } from "@/components/ui/report-button";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { Skeleton } from "@/components/skeleton/Skeleton";
 import { supabase } from "@/lib/supabase";
@@ -75,7 +76,10 @@ export function PostCard({
           </span>
         </div>
       </Link>
-      <ShareCopyButton path={postUrl} className="absolute bottom-2 right-2" />
+      <div className="absolute bottom-2 right-2 flex items-center gap-0.5">
+        <ShareCopyButton path={postUrl} />
+        <ReportButton targetType="post" targetId={post.id} />
+      </div>
     </article>
   );
 }

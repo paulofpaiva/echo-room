@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NavigationProvider } from "@/contexts/NavigationContext";
@@ -36,6 +37,7 @@ function App() {
       </Routes>
         </NavigationProvider>
     </BrowserRouter>
+    <Toaster position="top-center" />
     <Analytics />
     </ThemeProvider>
   );

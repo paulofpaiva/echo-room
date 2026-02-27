@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
+import { ReportButton } from "@/components/ui/report-button";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import type { Comment } from "@/types/comment";
 import { cn } from "@/lib/utils";
@@ -48,7 +49,10 @@ export function CommentCard({
           <span> · {replyCount} repl{replyCount === 1 ? "y" : "ies"}</span>
         </p>
       </Link>
-      <ShareCopyButton path={commentUrl} className="absolute top-3 right-0" />
+      <div className="absolute top-3 right-0 flex items-center gap-0.5">
+        <ShareCopyButton path={commentUrl} />
+        <ReportButton targetType="comment" targetId={comment.id} />
+      </div>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { BackLink } from "@/components/navigation/BackLink";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageCircle, Send } from "lucide-react";
+import { ReportButton } from "@/components/ui/report-button";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { usePost } from "@/hooks/usePost";
 import { useComment } from "@/hooks/useComment";
@@ -120,7 +121,10 @@ export function CommentDetailPage() {
             <MessageCircle className="h-3 w-3" />
             <span>{replyCount}</span>
           </span>
-          <ShareCopyButton path={`/c/${slug}/post/${postId}/comment/${commentId}`} />
+          <span className="flex items-center gap-1">
+            <ShareCopyButton path={`/c/${slug}/post/${postId}/comment/${commentId}`} />
+            <ReportButton targetType="comment" targetId={commentId} />
+          </span>
         </p>
       </div>
 
