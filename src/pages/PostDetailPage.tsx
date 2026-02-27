@@ -154,7 +154,7 @@ export function PostDetailPage() {
             </p>
           )}
         </form>
-        <CommentList postId={post.id} slug={slug} returnTo={postPageUrl} replyCounts={replyCounts} />
+        <CommentList postId={post.id} slug={slug} returnTo={postPageUrl} replyCounts={replyCounts} postAuthorFingerprint={post.anon_fingerprint} />
       </section>
     </div>
   );

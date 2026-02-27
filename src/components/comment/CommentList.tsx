@@ -8,9 +8,10 @@ interface CommentListProps {
   slug: string;
   returnTo: string;
   replyCounts?: Record<string, number>;
+  postAuthorFingerprint?: string | null;
 }
 
-export function CommentList({ postId, slug, returnTo, replyCounts = {} }: CommentListProps) {
+export function CommentList({ postId, slug, returnTo, replyCounts = {}, postAuthorFingerprint }: CommentListProps) {
   const {
     comments,
     isLoading,
@@ -57,6 +58,7 @@ export function CommentList({ postId, slug, returnTo, replyCounts = {} }: Commen
           replyCounts={replyCounts}
           slug={slug}
           returnTo={returnTo}
+          postAuthorFingerprint={postAuthorFingerprint}
         />
       ))}
       {hasNextPage && (

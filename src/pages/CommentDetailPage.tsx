@@ -105,8 +105,20 @@ export function CommentDetailPage() {
       </Link>
 
       <div>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-2">
           <FingerprintBadge anonFingerprint={comment.anon_fingerprint} />
+          {post.anon_fingerprint != null &&
+            comment.anon_fingerprint != null &&
+            post.anon_fingerprint === comment.anon_fingerprint && (
+              <span
+                className={cn(
+                  "rounded px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide",
+                  "bg-primary/15 text-primary"
+                )}
+              >
+                Author
+              </span>
+            )}
         </p>
         <p className="mt-2 text-sm text-foreground leading-snug whitespace-pre-wrap">
           {comment.content}
@@ -167,6 +179,7 @@ export function CommentDetailPage() {
                   replyCounts={replyCounts}
                   slug={slug}
                   returnTo={currentCommentUrl}
+                  postAuthorFingerprint={post.anon_fingerprint}
                 />
               ))}
               {hasNextPage && (
