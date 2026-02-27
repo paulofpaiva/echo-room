@@ -9,10 +9,17 @@ import { cn } from "@/lib/utils";
 interface CommentCardProps {
   comment: Comment;
   postId: string;
+  replyCounts?: Record<string, number>;
   depth?: number;
 }
 
-export function CommentCard({ comment, postId, depth = 0 }: CommentCardProps) {
+export function CommentCard({
+  comment,
+  postId,
+  replyCounts = {},
+  depth = 0,
+}: CommentCardProps) {
+  const replyCount = replyCounts[comment.id] ?? 0;
   const [expanded, setExpanded] = useState(false);
   const [repliesPage, setRepliesPage] = useState(1);
 
@@ -41,6 +48,7 @@ export function CommentCard({ comment, postId, depth = 0 }: CommentCardProps) {
             <FingerprintBadge anonFingerprint={comment.anon_fingerprint} />
             <span>
               {new Date(comment.created_at).toLocaleString()} · ↑ {comment.upvotes} ↓ {comment.downvotes}
+              · {replyCount} repl{replyCount === 1 ? "y" : "ies"}
               {expanded ? " · Click to collapse" : " · Click to see replies"}
             </span>
           </p>
@@ -58,6 +66,7 @@ export function CommentCard({ comment, postId, depth = 0 }: CommentCardProps) {
                   key={reply.id}
                   comment={reply}
                   postId={postId}
+                  replyCounts={replyCounts}
                   depth={depth + 1}
                 />
               ))}

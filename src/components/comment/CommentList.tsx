@@ -1,24 +1,22 @@
-import { useState } from "react";
-import { useComments } from "@/hooks/useComments";
+import { useCommentsInfinite } from "@/hooks/useCommentsInfinite";
 import { CommentCard } from "./CommentCard";
 import { Button } from "@/components/ui/button";
 
 interface CommentListProps {
   postId: string;
+  replyCounts?: Record<string, number>;
 }
 
-export function CommentList({ postId }: CommentListProps) {
-  const [page, setPage] = useState(1);
-
-  const { data, isLoading, isError, error, isFetching } = useComments(
-    postId,
-    null,
-    page,
-    true
-  );
-
-  const comments = data?.comments ?? [];
-  const hasMore = data?.hasMore ?? false;
+export function CommentList({ postId, replyCounts = {} }: CommentListProps) {
+  const {
+    comments,
+    isLoading,
+    isError,
+    error,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useCommentsInfinite(postId, true);
 
   if (isLoading) {
     return <p className="text-muted-foreground text-sm">Loading comments…</p>;
@@ -39,29 +37,23 @@ export function CommentList({ postId }: CommentListProps) {
   return (
     <div className="space-y-3">
       {comments.map((comment) => (
-        <CommentCard key={comment.id} comment={comment} postId={postId} />
+        <CommentCard
+          key={comment.id}
+          comment={comment}
+          postId={postId}
+          replyCounts={replyCounts}
+        />
       ))}
-      <div className="flex gap-2">
-        {page > 1 && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage((p) => p - 1)}
-          >
-            Previous
-          </Button>
-        )}
-        {hasMore && (
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={isFetching}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            {isFetching ? "Loading…" : "Next"}
-          </Button>
-        )}
-      </div>
+      {hasNextPage && (
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={isFetchingNextPage}
+          onClick={() => fetchNextPage()}
+        >
+          {isFetchingNextPage ? "Loading…" : "Load more"}
+        </Button>
+      )}
     </div>
   );
 }

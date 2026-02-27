@@ -9,7 +9,7 @@ export async function fetchComments(
   page: number
 ): Promise<{ comments: Comment[]; hasMore: boolean }> {
   const from = (page - 1) * PAGE_SIZE;
-  const to = from + PAGE_SIZE - 1;
+  const to = from + PAGE_SIZE; // request PAGE_SIZE + 1 to know if there are more
 
   let query = supabase
     .from("comments")
@@ -26,6 +26,8 @@ export async function fetchComments(
 
   const { data, error } = await query;
   if (error) throw error;
-  const comments = (data ?? []) as Comment[];
-  return { comments, hasMore: comments.length === PAGE_SIZE };
+  const raw = (data ?? []) as Comment[];
+  const hasMore = raw.length > PAGE_SIZE;
+  const comments = hasMore ? raw.slice(0, PAGE_SIZE) : raw;
+  return { comments, hasMore };
 }

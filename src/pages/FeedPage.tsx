@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { usePosts } from "@/hooks/usePosts";
 import { useCommunities } from "@/hooks/useCommunities";
+import { useCommentCounts } from "@/hooks/useCommentCounts";
 import { PostCard } from "@/components/post/PostCard";
 import { Button } from "@/components/ui/button";
 
@@ -44,6 +45,8 @@ export function FeedPage() {
   }
 
   const { posts, hasMore } = data ?? { posts: [], hasMore: false };
+  const postIds = posts.map((p) => p.id);
+  const { data: commentCounts = {} } = useCommentCounts(postIds);
 
   return (
     <div className="space-y-6">
@@ -63,6 +66,7 @@ export function FeedPage() {
               key={post.id}
               post={post}
               communitySlug={communitySlug}
+              commentCount={commentCounts[post.id] ?? 0}
             />
           ))
         )}

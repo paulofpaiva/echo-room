@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { usePost } from "@/hooks/usePost";
+import { useReplyCounts } from "@/hooks/useReplyCounts";
 import { CommentList } from "@/components/comment/CommentList";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
 
@@ -14,6 +15,7 @@ export function PostDetailPage() {
   const { slug, postId } = useParams<{ slug: string; postId: string }>();
 
   const { data: post, isLoading, isError, error } = usePost(postId);
+  const { data: replyCounts = {} } = useReplyCounts(post?.id ?? "", !!post);
 
   if (!slug || !postId) {
     return <Navigate to="/" replace />;
@@ -67,7 +69,7 @@ export function PostDetailPage() {
 
       <section>
         <h2 className="text-lg font-semibold mb-3">Comments</h2>
-        <CommentList postId={post.id} />
+        <CommentList postId={post.id} replyCounts={replyCounts} />
       </section>
     </div>
   );

@@ -13,10 +13,16 @@ import { cn } from "@/lib/utils";
 interface PostCardProps {
   post: Post;
   communitySlug: string;
+  commentCount?: number;
   className?: string;
 }
 
-export function PostCard({ post, communitySlug, className }: PostCardProps) {
+export function PostCard({
+  post,
+  communitySlug,
+  commentCount = 0,
+  className,
+}: PostCardProps) {
   const slug = post.community?.slug ?? communitySlug;
 
   return (
@@ -33,7 +39,7 @@ export function PostCard({ post, communitySlug, className }: PostCardProps) {
             <FingerprintBadge anonFingerprint={post.anon_fingerprint} />
             <span>
               {new Date(post.created_at).toLocaleString()} · ↑ {post.upvotes} ↓{" "}
-              {post.downvotes}
+              {post.downvotes} · {commentCount} comment{commentCount !== 1 ? "s" : ""}
             </span>
           </CardDescription>
         </CardHeader>
