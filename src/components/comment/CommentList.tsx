@@ -6,12 +6,11 @@ import { Skeleton } from "@/components/skeleton/Skeleton";
 interface CommentListProps {
   postId: string;
   slug: string;
-  returnTo: string;
   replyCounts?: Record<string, number>;
   postAuthorFingerprint?: string | null;
 }
 
-export function CommentList({ postId, slug, returnTo, replyCounts = {}, postAuthorFingerprint }: CommentListProps) {
+export function CommentList({ postId, slug, replyCounts = {}, postAuthorFingerprint }: CommentListProps) {
   const {
     comments,
     isLoading,
@@ -57,7 +56,6 @@ export function CommentList({ postId, slug, returnTo, replyCounts = {}, postAuth
           postId={postId}
           replyCounts={replyCounts}
           slug={slug}
-          returnTo={returnTo}
           postAuthorFingerprint={postAuthorFingerprint}
         />
       ))}

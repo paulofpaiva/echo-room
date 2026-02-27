@@ -6,21 +6,18 @@ interface NewsCommentCardProps {
   comment: NewsComment;
   newsId: string;
   replyCount: number;
-  returnTo: string;
 }
 
 export function NewsCommentCard({
   comment,
   newsId,
   replyCount,
-  returnTo,
 }: NewsCommentCardProps) {
   const commentUrl = `/news/${newsId}/comment/${comment.id}`;
 
   return (
     <Link
       to={commentUrl}
-      state={{ from: returnTo }}
       className="block py-3 border-b border-border/40 last:border-b-0"
     >
       <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-2">

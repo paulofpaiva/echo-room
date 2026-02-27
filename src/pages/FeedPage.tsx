@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { Link, useParams, useSearchParams, useLocation, Navigate } from "react-router-dom";
+import { Link, useParams, useSearchParams, Navigate } from "react-router-dom";
+import { BackLink } from "@/components/navigation/BackLink";
 import { usePostsFeed } from "@/hooks/usePostsFeed";
 import { useCommunities } from "@/hooks/useCommunities";
 import { useCommentCounts } from "@/hooks/useCommentCounts";
@@ -10,10 +11,7 @@ import { PlusCircle } from "lucide-react";
 
 export function FeedPage() {
   const { slug } = useParams<{ slug: string }>();
-  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const returnTo = (location.state as { from?: string } | null)?.from ?? "/";
-  const backLabel = returnTo.startsWith("/communities") ? "Back to communities" : "Back to home";
   const pageFromUrl = Math.max(1, Number(searchParams.get("page")) || 1);
   const communitySlug = slug ?? "";
 
@@ -58,13 +56,7 @@ export function FeedPage() {
 
   const isInitialLoading = isLoading && posts.length === 0;
   if (isInitialLoading) {
-    return (
-      <FeedSkeleton
-        communitySlug={communitySlug}
-        returnTo={returnTo}
-        backLabel={backLabel}
-      />
-    );
+    return <FeedSkeleton communitySlug={communitySlug} />;
   }
 
   if (isError) {
@@ -80,12 +72,7 @@ export function FeedPage() {
 
   return (
     <div className="space-y-6">
-      <Link
-        to={returnTo}
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← {backLabel}
-      </Link>
+      <BackLink />
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold">/c/{communitySlug}</h1>
         <Link

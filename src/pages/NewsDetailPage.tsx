@@ -1,4 +1,5 @@
-import { Link, useParams, useLocation, Navigate } from "react-router-dom";
+import { Link, useParams, Navigate } from "react-router-dom";
+import { BackLink } from "@/components/navigation/BackLink";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ExternalLink, Send } from "lucide-react";
@@ -15,9 +16,6 @@ import { cn } from "@/lib/utils";
 
 export function NewsDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const location = useLocation();
-  const returnTo = (location.state as { from?: string } | null)?.from ?? "/news";
-  const backLabel = returnTo === "/" ? "Back to home" : "Back to news";
 
   const { data: news, isLoading, isError, error } = useNews(id, true);
   const { data: replyCounts = {} } = useNewsReplyCounts(news?.id ?? "", !!news);
@@ -56,9 +54,7 @@ export function NewsDetailPage() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <Link to={returnTo} className="text-sm text-muted-foreground hover:text-foreground">
-          ← {backLabel}
-        </Link>
+        <BackLink />
         <div className="animate-pulse space-y-4">
           <div className="aspect-video w-full max-w-2xl rounded-lg bg-muted" />
           <div className="h-8 w-3/4 bg-muted rounded" />
@@ -74,21 +70,14 @@ export function NewsDetailPage() {
         <p className="text-destructive">
           {error instanceof Error ? error.message : "News not found."}
         </p>
-        <Link to={returnTo} className="text-primary text-sm underline">
-          ← {backLabel}
-        </Link>
+        <BackLink variant="primary" />
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <Link
-        to={returnTo}
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← {backLabel}
-      </Link>
+      <BackLink />
 
       <article className="rounded-lg border border-border/60 bg-card overflow-hidden">
         {news.image_url && (
@@ -163,11 +152,7 @@ export function NewsDetailPage() {
             </p>
           )}
         </form>
-        <NewsCommentList
-          newsId={news.id}
-          returnTo={`/news/${news.id}`}
-          replyCounts={replyCounts}
-        />
+        <NewsCommentList newsId={news.id} replyCounts={replyCounts} />
       </section>
     </div>
   );

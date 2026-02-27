@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { BackLink } from "@/components/navigation/BackLink";
 import { Search } from "lucide-react";
 import { useCommunitySearch } from "@/hooks/useCommunitySearch";
 import { useCommunityPostCounts } from "@/hooks/useCommunityPostCounts";
+import { useDebouncedEffect } from "@/hooks/useDebouncedEffect";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CommunityListSkeleton } from "@/components/skeleton/CommunityListSkeleton";
+
+const SEARCH_DEBOUNCE_MS = 400;
 
 export function CommunitiesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -15,6 +19,17 @@ export function CommunitiesPage() {
   useEffect(() => {
     setInputValue(q);
   }, [q]);
+
+  useDebouncedEffect(
+    inputValue.trim(),
+    SEARCH_DEBOUNCE_MS,
+    (trimmed) => {
+      const next = new URLSearchParams(searchParams);
+      if (trimmed) next.set("q", trimmed);
+      else next.delete("q");
+      setSearchParams(next, { replace: true });
+    }
+  );
 
   const { data: communities = [], isLoading, isError, error } = useCommunitySearch(q);
   const { data: postCounts = {} } = useCommunityPostCounts();
@@ -34,9 +49,7 @@ export function CommunitiesPage() {
 
   return (
     <div className="space-y-6">
-      <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
-        ← Back to home
-      </Link>
+      <BackLink />
 
       <h1 className="text-2xl font-semibold">Communities</h1>
 
@@ -70,13 +83,10 @@ export function CommunitiesPage() {
         </p>
       ) : (
         <ul className="list-none border rounded-md divide-y divide-border">
-          {communities.map((community) => {
-            const fromUrl = q ? `/communities?q=${encodeURIComponent(q)}` : "/communities";
-            return (
+          {communities.map((community) => (
             <li key={community.id}>
               <Link
                 to={`/c/${community.slug}`}
-                state={{ from: fromUrl }}
                 className="flex items-center justify-between px-3 py-2 text-sm hover:bg-muted/50 transition-colors"
               >
                 <span>/c/{community.slug}</span>
@@ -85,8 +95,7 @@ export function CommunitiesPage() {
                 </span>
               </Link>
             </li>
-            );
-          })}
+          ))}
         </ul>
       )}
     </div>

@@ -8,7 +8,6 @@ interface CommentCardProps {
   postId: string;
   replyCounts?: Record<string, number>;
   slug: string;
-  returnTo: string;
   postAuthorFingerprint?: string | null;
 }
 
@@ -17,7 +16,6 @@ export function CommentCard({
   postId,
   replyCounts = {},
   slug,
-  returnTo,
   postAuthorFingerprint,
 }: CommentCardProps) {
   const replyCount = replyCounts[comment.id] ?? 0;
@@ -30,7 +28,6 @@ export function CommentCard({
   return (
     <Link
       to={commentUrl}
-      state={{ from: returnTo }}
       className="block py-3 border-b border-border/40 last:border-b-0"
     >
       <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-2">

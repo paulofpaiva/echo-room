@@ -1,4 +1,5 @@
-import { Link, useParams, useLocation, Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
+import { BackLink } from "@/components/navigation/BackLink";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageCircle, Send } from "lucide-react";
@@ -16,8 +17,6 @@ import { createCommentSchema, type CreateCommentFormValues } from "@/schemas/cre
 
 export function NewsCommentDetailPage() {
   const { newsId, commentId } = useParams<{ newsId: string; commentId: string }>();
-  const location = useLocation();
-  const returnTo = (location.state as { from?: string } | null)?.from ?? "/news";
 
   const { data: comment, isLoading: commentLoading, isError: commentError, error: commentErrorObj } = useNewsComment(commentId, !!commentId);
   const { data: replyCounts = {} } = useNewsReplyCounts(newsId ?? "", !!newsId);
@@ -61,16 +60,13 @@ export function NewsCommentDetailPage() {
   const isLoading = commentLoading;
   const isError = commentError;
   const error = commentErrorObj;
-  const currentCommentUrl = newsId && commentId ? `/news/${newsId}/comment/${commentId}` : "";
 
   if (!newsId || !commentId) return <Navigate to="/news" replace />;
 
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <Link to={returnTo} className="text-sm text-muted-foreground hover:text-foreground">
-          ← Back
-        </Link>
+        <BackLink />
         <div className="animate-pulse space-y-2">
           <div className="h-3 w-24 bg-muted rounded" />
           <div className="h-4 w-full bg-muted rounded" />
@@ -85,9 +81,7 @@ export function NewsCommentDetailPage() {
         <p className="text-destructive">
           {error instanceof Error ? error.message : "Comment not found."}
         </p>
-        <Link to={returnTo} className="text-primary text-sm underline">
-          ← Back
-        </Link>
+        <BackLink variant="primary" />
       </div>
     );
   }
@@ -96,12 +90,7 @@ export function NewsCommentDetailPage() {
 
   return (
     <div className="space-y-6">
-      <Link
-        to={returnTo}
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← Back
-      </Link>
+      <BackLink />
 
       <div>
         <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-2">
@@ -157,7 +146,6 @@ export function NewsCommentDetailPage() {
                   comment={reply}
                   newsId={newsId}
                   replyCount={replyCounts[reply.id] ?? 0}
-                  returnTo={currentCommentUrl}
                 />
               ))}
               {hasNextPage && (

@@ -21,7 +21,7 @@ export function useCreatePostForm(slug: string | undefined) {
       countryCode: resolvedCountryCode,
       imageFiles,
     });
-    navigate(`/c/${slug}/post/${id}`, { state: { from: `/c/${slug}` }, replace: true });
+    navigate(`/c/${slug}/post/${id}`, { replace: true });
   };
 
   return {

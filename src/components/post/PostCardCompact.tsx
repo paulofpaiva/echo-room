@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { MessageCircle, Sparkles, TrendingUp } from "lucide-react";
 import type { Post } from "@/types/post";
 import { cn } from "@/lib/utils";
@@ -21,13 +21,10 @@ export function PostCardCompact({
   className,
 }: PostCardCompactProps) {
   const slug = post.community?.slug ?? communitySlug;
-  const location = useLocation();
-  const returnTo = location.pathname + location.search;
 
   return (
     <Link
       to={`/c/${slug}/post/${post.id}`}
-      state={{ from: returnTo }}
       className={cn(
         "flex min-h-0 w-full min-w-0 flex-1 flex-col rounded-lg border border-border/60 bg-card px-3 py-2 transition-colors hover:border-border hover:bg-muted/30",
         className

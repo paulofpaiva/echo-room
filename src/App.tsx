@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { NavigationProvider } from "@/contexts/NavigationContext";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { HomePage } from "@/pages/HomePage";
 import { FeedPage } from "@/pages/FeedPage";
@@ -16,6 +17,7 @@ function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
+        <NavigationProvider>
         <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
@@ -31,6 +33,7 @@ function App() {
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+        </NavigationProvider>
     </BrowserRouter>
     </ThemeProvider>
   );

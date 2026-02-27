@@ -1,20 +1,14 @@
-import { Link } from "react-router-dom";
+import { BackLink } from "@/components/navigation/BackLink";
 import { Skeleton } from "./Skeleton";
 
 interface PostDetailSkeletonProps {
   slug: string;
-  returnTo?: string;
 }
 
-export function PostDetailSkeleton({ slug, returnTo = `/c/${slug}` }: PostDetailSkeletonProps) {
+export function PostDetailSkeleton({ slug }: PostDetailSkeletonProps) {
   return (
     <div className="space-y-6">
-      <Link
-        to={returnTo}
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← Back to /c/{slug}
-      </Link>
+      <BackLink />
 
       <div>
         <Skeleton className="h-4 w-3/4 max-w-xs" />

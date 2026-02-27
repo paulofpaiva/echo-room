@@ -1,4 +1,5 @@
-import { Link, useParams, useLocation, Navigate } from "react-router-dom";
+import { Link, useParams, Navigate } from "react-router-dom";
+import { BackLink } from "@/components/navigation/BackLink";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageCircle, Send } from "lucide-react";
@@ -23,9 +24,6 @@ export function CommentDetailPage() {
     postId: string;
     commentId: string;
   }>();
-  const location = useLocation();
-  const returnTo = (location.state as { from?: string } | null)?.from ?? (slug && postId ? `/c/${slug}/post/${postId}` : "/");
-
   const { data: post, isLoading: postLoading, isError: postError, error: postErrorObj } = usePost(postId);
   const { data: comment, isLoading: commentLoading, isError: commentError, error: commentErrorObj } = useComment(commentId, !!postId);
   const { data: replyCounts = {} } = useReplyCounts(post?.id ?? "", !!post);
@@ -69,22 +67,12 @@ export function CommentDetailPage() {
   const isLoading = postLoading || commentLoading;
   const isError = postError || commentError;
   const error = postErrorObj ?? commentErrorObj;
-  const currentCommentUrl = slug && postId && commentId
-    ? `/c/${slug}/post/${postId}/comment/${commentId}`
-    : "";
-
   if (!slug || !postId || !commentId) {
     return <Navigate to="/" replace />;
   }
 
   if (isLoading) {
-    return (
-      <CommentDetailSkeleton
-        slug={slug}
-        postId={postId}
-        returnTo={returnTo}
-      />
-    );
+    return <CommentDetailSkeleton slug={slug} postId={postId} />;
   }
 
   if (isError || !post || !comment) {
@@ -93,9 +81,7 @@ export function CommentDetailPage() {
         <p className="text-destructive">
           {error instanceof Error ? error.message : "Comment not found."}
         </p>
-        <Link to={returnTo} className="text-primary text-sm underline">
-          ← Back
-        </Link>
+        <BackLink variant="primary" />
       </div>
     );
   }
@@ -104,12 +90,7 @@ export function CommentDetailPage() {
 
   return (
     <div className="space-y-6">
-      <Link
-        to={returnTo}
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← Back
-      </Link>
+      <BackLink />
 
       <div>
         <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-2">
@@ -185,7 +166,6 @@ export function CommentDetailPage() {
                   postId={post.id}
                   replyCounts={replyCounts}
                   slug={slug}
-                  returnTo={currentCommentUrl}
                   postAuthorFingerprint={post.anon_fingerprint}
                 />
               ))}

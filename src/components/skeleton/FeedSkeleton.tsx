@@ -1,27 +1,16 @@
-import { Link } from "react-router-dom";
+import { BackLink } from "@/components/navigation/BackLink";
 import { Skeleton } from "./Skeleton";
 
 const PLACEHOLDER_POSTS = 4;
 
 interface FeedSkeletonProps {
   communitySlug: string;
-  returnTo?: string;
-  backLabel?: string;
 }
 
-export function FeedSkeleton({
-  communitySlug,
-  returnTo = "/",
-  backLabel = "Back to home",
-}: FeedSkeletonProps) {
+export function FeedSkeleton({ communitySlug }: FeedSkeletonProps) {
   return (
     <div className="space-y-6">
-      <Link
-        to={returnTo}
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← {backLabel}
-      </Link>
+      <BackLink />
       <h1 className="text-2xl font-semibold">/c/{communitySlug}</h1>
       <div className="space-y-4">
         {Array.from({ length: PLACEHOLDER_POSTS }).map((_, i) => (

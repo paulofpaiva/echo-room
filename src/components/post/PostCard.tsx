@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
 import type { Post } from "@/types/post";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
@@ -24,11 +24,9 @@ export function PostCard({
   className,
 }: PostCardProps) {
   const slug = post.community?.slug ?? communitySlug;
-  const location = useLocation();
-  const returnTo = location.pathname + location.search;
 
   return (
-    <Link to={`/c/${slug}/post/${post.id}`} state={{ from: returnTo }}>
+    <Link to={`/c/${slug}/post/${post.id}`}>
       <article
         className={cn(
           "rounded-lg border border-border/60 bg-card px-3 py-2.5 transition-colors hover:border-border hover:bg-muted/30",

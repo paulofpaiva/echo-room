@@ -11,7 +11,6 @@ export function NewsCardCompact({ news, className }: NewsCardCompactProps) {
   return (
     <Link
       to={`/news/${news.id}`}
-      state={{ from: "/" }}
       className={cn(
         "block flex-[0_0_85%] sm:flex-[0_0_70%] md:flex-[0_0_45%] min-w-0 rounded-lg border border-border/60 bg-card overflow-hidden transition-colors hover:border-border hover:bg-muted/30",
         className

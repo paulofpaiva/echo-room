@@ -1,4 +1,5 @@
-import { Link, useParams, useLocation, Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
+import { BackLink } from "@/components/navigation/BackLink";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageCircle, Send } from "lucide-react";
@@ -22,9 +23,6 @@ const BUCKET = "post-images";
 
 export function PostDetailPage() {
   const { slug, postId } = useParams<{ slug: string; postId: string }>();
-  const location = useLocation();
-  const returnTo = (location.state as { from?: string } | null)?.from ?? `/c/${slug}`;
-  const postPageUrl = `/c/${slug}/post/${postId}`;
 
   const { data: post, isLoading, isError, error } = usePost(postId);
   const { data: commentCounts = {}, isLoading: isCommentCountsLoading } = useCommentCounts(post?.id ? [post.id] : []);
@@ -65,7 +63,7 @@ export function PostDetailPage() {
   }
 
   if (isLoading) {
-    return <PostDetailSkeleton slug={slug} returnTo={returnTo} />;
+    return <PostDetailSkeleton slug={slug} />;
   }
 
   if (isError || !post) {
@@ -74,21 +72,14 @@ export function PostDetailPage() {
         <p className="text-destructive">
           {error instanceof Error ? error.message : "Post not found."}
         </p>
-        <Link to={`/c/${slug}`} className="text-primary text-sm underline">
-          ← Back to /c/{slug}
-        </Link>
+        <BackLink variant="primary" />
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <Link
-        to={returnTo}
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← Back to /c/{slug}
-      </Link>
+      <BackLink />
 
       <div>
         <h1 className="text-2xl font-semibold text-foreground">{post.title}</h1>
@@ -161,7 +152,7 @@ export function PostDetailPage() {
             </p>
           )}
         </form>
-        <CommentList postId={post.id} slug={slug} returnTo={postPageUrl} replyCounts={replyCounts} postAuthorFingerprint={post.anon_fingerprint} />
+        <CommentList postId={post.id} slug={slug} replyCounts={replyCounts} postAuthorFingerprint={post.anon_fingerprint} />
       </section>
     </div>
   );

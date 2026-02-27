@@ -1,22 +1,32 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { BackLink } from "@/components/navigation/BackLink";
 import { Search } from "lucide-react";
 import { useNewsList } from "@/hooks/useNewsList";
 import { useNewsCommentCounts } from "@/hooks/useNewsCommentCounts";
+import { useDebouncedEffect } from "@/hooks/useDebouncedEffect";
 import { NewsCard } from "@/components/news/NewsCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+const SEARCH_DEBOUNCE_MS = 400;
+
 export function NewsPage() {
-  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const q = searchParams.get("q") ?? "";
-  const returnTo = location.pathname + location.search;
   const [inputValue, setInputValue] = useState(q);
 
   useEffect(() => {
     setInputValue(q);
   }, [q]);
+
+  useDebouncedEffect(
+    inputValue.trim(),
+    SEARCH_DEBOUNCE_MS,
+    (trimmed) => {
+      setSearchParams(trimmed ? { q: trimmed } : {}, { replace: true });
+    }
+  );
 
   const {
     items,
@@ -44,12 +54,7 @@ export function NewsPage() {
 
   return (
     <div className="space-y-6">
-      <Link
-        to="/"
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← Back to home
-      </Link>
+      <BackLink />
 
       <h1 className="text-2xl font-semibold">News</h1>
 
@@ -103,7 +108,6 @@ export function NewsPage() {
                       news={news}
                       commentCount={commentCounts[news.id] ?? 0}
                       commentCountLoading={isCommentCountsLoading}
-                      returnTo={returnTo}
                     />
                   </li>
                 ))}

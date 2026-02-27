@@ -5,15 +5,10 @@ import { Skeleton } from "@/components/skeleton/Skeleton";
 
 interface NewsCommentListProps {
   newsId: string;
-  returnTo: string;
   replyCounts?: Record<string, number>;
 }
 
-export function NewsCommentList({
-  newsId,
-  returnTo,
-  replyCounts = {},
-}: NewsCommentListProps) {
+export function NewsCommentList({ newsId, replyCounts = {} }: NewsCommentListProps) {
   const {
     comments,
     isLoading,
@@ -58,7 +53,6 @@ export function NewsCommentList({
           comment={comment}
           newsId={newsId}
           replyCount={replyCounts[comment.id] ?? 0}
-          returnTo={returnTo}
         />
       ))}
       {hasNextPage && (

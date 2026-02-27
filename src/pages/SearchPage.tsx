@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { BackLink } from "@/components/navigation/BackLink";
 import { ArrowDownAZ, ArrowUpAZ, MessageCircle, Search, TrendingUp } from "lucide-react";
 import { useSearchPosts } from "@/hooks/useSearchPosts";
+import { useDebouncedEffect } from "@/hooks/useDebouncedEffect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { SearchOrder } from "@/types/search";
 import { cn } from "@/lib/utils";
+
+const SEARCH_DEBOUNCE_MS = 400;
 
 const ORDER_OPTIONS: { value: SearchOrder; label: string; icon: React.ReactNode }[] = [
   { value: "newest", label: "Newest", icon: <ArrowDownAZ className="h-4 w-4" /> },
@@ -23,6 +27,17 @@ export function SearchPage() {
   useEffect(() => {
     setInputValue(q);
   }, [q]);
+
+  useDebouncedEffect(
+    inputValue.trim(),
+    SEARCH_DEBOUNCE_MS,
+    (trimmed) => {
+      const next = new URLSearchParams(searchParams);
+      if (trimmed) next.set("q", trimmed);
+      else next.delete("q");
+      setSearchParams(next, { replace: true });
+    }
+  );
 
   const {
     data,
@@ -53,9 +68,7 @@ export function SearchPage() {
 
   return (
     <div className="space-y-6">
-      <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
-        ← Back to home
-      </Link>
+      <BackLink />
 
       <h1 className="text-2xl font-semibold">Search</h1>
 

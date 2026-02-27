@@ -1,21 +1,15 @@
-import { Link } from "react-router-dom";
+import { BackLink } from "@/components/navigation/BackLink";
 import { Skeleton } from "./Skeleton";
 
 interface CommentDetailSkeletonProps {
   slug: string;
   postId: string;
-  returnTo: string;
 }
 
-export function CommentDetailSkeleton({ returnTo }: CommentDetailSkeletonProps) {
+export function CommentDetailSkeleton(_props: CommentDetailSkeletonProps) {
   return (
     <div className="space-y-6">
-      <Link
-        to={returnTo}
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← Back
-      </Link>
+      <BackLink />
 
       <div>
         <div className="flex items-center gap-2">

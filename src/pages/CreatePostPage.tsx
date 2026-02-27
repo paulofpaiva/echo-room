@@ -1,5 +1,6 @@
 import { useRef } from "react";
-import { Link, useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
+import { BackLink } from "@/components/navigation/BackLink";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePlus } from "lucide-react";
@@ -22,7 +23,6 @@ const ACCEPT = {
 
 export function CreatePostPage() {
   const { slug } = useParams<{ slug: string }>();
-  const feedUrl = slug ? `/c/${slug}` : "/";
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: communities } = useCommunities();
@@ -66,9 +66,7 @@ export function CreatePostPage() {
 
   return (
     <div className="space-y-6">
-      <Link to={feedUrl} className="text-sm text-muted-foreground hover:text-foreground">
-        ← Back to /c/{slug}
-      </Link>
+      <BackLink />
 
       <h1 className="text-2xl font-semibold">New post in /c/{slug}</h1>
 
