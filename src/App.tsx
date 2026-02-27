@@ -1,12 +1,20 @@
-import { Button } from "@/components/ui/button";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { MainLayout } from "@/components/layout/MainLayout";
+import { FeedPage } from "@/pages/FeedPage";
+import { PostDetailPage } from "@/pages/PostDetailPage";
 
 function App() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-8">
-      <h1 className="text-2xl font-semibold">Echo Room</h1>
-      <p className="text-muted-foreground">React + Vite + shadcn/ui</p>
-      <Button>Get started</Button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Navigate to="/c/general" replace />} />
+          <Route path="/c/:slug" element={<FeedPage />} />
+          <Route path="/c/:slug/post/:postId" element={<PostDetailPage />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/c/general" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
