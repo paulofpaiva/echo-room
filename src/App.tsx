@@ -5,6 +5,7 @@ import { FeedPage } from "@/pages/FeedPage";
 import { PostDetailPage } from "@/pages/PostDetailPage";
 import { CommentDetailPage } from "@/pages/CommentDetailPage";
 import { CreatePostPage } from "@/pages/CreatePostPage";
+import { SearchPage } from "@/pages/SearchPage";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/search" element={<SearchPage />} />
           <Route path="/c/:slug" element={<FeedPage />} />
           <Route path="/c/:slug/post/new" element={<CreatePostPage />} />
           <Route path="/c/:slug/post/:postId" element={<PostDetailPage />} />

@@ -1,5 +1,5 @@
 import type { Community } from "./community";
-import type { PostImage } from "./post-image";
+import type { PostImage } from "./post-image.js";
 
 export interface Post {
   id: string;

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Search } from "lucide-react";
 
 const GITHUB_REPO_URL =
   import.meta.env.VITE_GITHUB_REPO_URL ?? "https://github.com";
@@ -30,15 +31,24 @@ export function Header() {
         >
           echoroom
         </Link>
-        <a
-          href={GITHUB_REPO_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-amber-200 hover:text-amber-100 transition-colors"
-          aria-label="Open repository on GitHub"
-        >
-          <GitHubIcon className="h-5 w-5" />
-        </a>
+        <nav className="flex items-center gap-3">
+          <Link
+            to="/search"
+            className="text-amber-200 hover:text-amber-100 transition-colors"
+            aria-label="Search"
+          >
+            <Search className="h-5 w-5" />
+          </Link>
+          <a
+            href={GITHUB_REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-amber-200 hover:text-amber-100 transition-colors"
+            aria-label="Open repository on GitHub"
+          >
+            <GitHubIcon className="h-5 w-5" />
+          </a>
+        </nav>
       </div>
     </header>
   );

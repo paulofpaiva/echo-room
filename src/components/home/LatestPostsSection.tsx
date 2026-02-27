@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 import { PostCardCompact } from "@/components/post/PostCardCompact";
 import { useLatestPosts } from "@/hooks/useLatestPosts";
@@ -14,10 +15,18 @@ export function LatestPostsSection() {
   if (isError) {
     return (
       <div>
-        <h2 className="text-lg font-semibold mb-2 flex items-center gap-1.5">
-          <Sparkles className="h-5 w-5 text-primary shrink-0" aria-hidden />
-          Latest posts
-        </h2>
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-lg font-semibold flex items-center gap-1.5">
+            <Sparkles className="h-5 w-5 text-primary shrink-0" aria-hidden />
+            Latest posts
+          </h2>
+          <Link
+            to="/search"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            View more
+          </Link>
+        </div>
         <p className="text-sm text-destructive">
           {error instanceof Error ? error.message : "Failed to load posts."}
         </p>
@@ -27,10 +36,18 @@ export function LatestPostsSection() {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-2 flex items-center gap-1.5">
-        <Sparkles className="h-5 w-5 text-primary shrink-0" aria-hidden />
-        Latest posts
-      </h2>
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-lg font-semibold flex items-center gap-1.5">
+          <Sparkles className="h-5 w-5 text-primary shrink-0" aria-hidden />
+          Latest posts
+        </h2>
+        <Link
+          to="/search"
+          className="text-sm text-muted-foreground hover:text-foreground"
+        >
+          View more
+        </Link>
+      </div>
       {isLoading ? (
         <HomePostListSkeleton count={2} horizontal />
       ) : posts.length === 0 ? (
