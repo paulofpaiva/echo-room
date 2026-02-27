@@ -3,6 +3,7 @@ import { useCommunityPostCounts } from "@/hooks/useCommunityPostCounts";
 import { CommunityList } from "@/components/community/CommunityList";
 import { CommunityListSkeleton } from "@/components/skeleton/CommunityListSkeleton";
 import { LatestPostsSection } from "@/components/home/LatestPostsSection";
+import { NewsSection } from "@/components/home/NewsSection";
 import { TopCommentedPostsSection } from "@/components/home/TopCommentedPostsSection";
 
 export function HomePage() {
@@ -40,6 +41,7 @@ export function HomePage() {
 
       <LatestPostsSection />
       <TopCommentedPostsSection />
+      <NewsSection />
     </div>
   );
 }

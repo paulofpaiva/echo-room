@@ -14,11 +14,14 @@ npm install
 npm run dev
 ```
 
-Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in `.env`. Apply Supabase migrations for the DB schema and deploy Edge Functions for create-post and create-comment.
+Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in `.env`. Apply Supabase migrations and deploy Edge Functions. For the news carousel: set **NEWS_API_KEY** in Supabase Edge Function secrets (Dashboard → Project → Edge Functions → Secrets); do not put the News API key in `.env` as `VITE_*` (it would be exposed to the browser).
+
+**Auto-updating news:** The repo includes a GitHub Actions workflow (`.github/workflows/sync-news.yml`) that calls the `sync-news` Edge Function every 6 hours. To enable it, add these **repository secrets** (Settings → Secrets and variables → Actions): `SUPABASE_SYNC_NEWS_URL` = `https://YOUR_PROJECT_REF.supabase.co/functions/v1/sync-news`, and `SUPABASE_ANON_KEY` = your Supabase anon key. You can also run the workflow manually from the Actions tab.
 
 ## Features
 
 - Communities with post feeds and pagination
 - Posts with optional images; nested comments
 - Search (newest, oldest, most commented)
+- News section (carousel on home, full list and filters at /news); sync via Edge Function `sync-news`
 - Author country shown as a flag next to the fingerprint badge (geo from IP, stored on post/comment)

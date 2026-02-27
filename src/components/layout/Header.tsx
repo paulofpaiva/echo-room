@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Search } from "lucide-react";
+import { Newspaper, Search } from "lucide-react";
 
 const GITHUB_REPO_URL =
   import.meta.env.VITE_GITHUB_REPO_URL ?? "https://github.com";
@@ -32,6 +32,13 @@ export function Header() {
           echoroom
         </Link>
         <nav className="flex items-center gap-3">
+          <Link
+            to="/news"
+            className="text-amber-200 hover:text-amber-100 transition-colors"
+            aria-label="News"
+          >
+            <Newspaper className="h-5 w-5" />
+          </Link>
           <Link
             to="/search"
             className="text-amber-200 hover:text-amber-100 transition-colors"
