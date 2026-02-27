@@ -2,7 +2,6 @@ import { Link, useParams, useLocation, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageCircle, Send } from "lucide-react";
-import { useNews } from "@/hooks/useNews";
 import { useNewsComment } from "@/hooks/useNewsComment";
 import { useNewsRepliesInfinite } from "@/hooks/useNewsCommentsInfinite";
 import { useNewsReplyCounts } from "@/hooks/useNewsReplyCounts";
@@ -19,7 +18,6 @@ export function NewsCommentDetailPage() {
   const location = useLocation();
   const returnTo = (location.state as { from?: string } | null)?.from ?? "/news";
 
-  const { data: news } = useNews(newsId, !!newsId);
   const { data: comment, isLoading: commentLoading, isError: commentError, error: commentErrorObj } = useNewsComment(commentId, !!commentId);
   const { data: replyCounts = {} } = useNewsReplyCounts(newsId ?? "", !!newsId);
   const {

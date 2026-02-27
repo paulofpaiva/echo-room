@@ -1,5 +1,4 @@
 import { useNewsCommentsInfinite } from "@/hooks/useNewsCommentsInfinite";
-import { useNewsReplyCounts } from "@/hooks/useNewsReplyCounts";
 import { NewsCommentCard } from "./NewsCommentCard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/skeleton/Skeleton";
