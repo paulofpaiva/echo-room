@@ -16,6 +16,7 @@ import {
 } from "@/lib/cookie";
 
 const INTRO_CLOSED_COOKIE = "echo-room-intro-closed";
+const AUTHOR_GITHUB_URL = import.meta.env.VITE_AUTHOR_GITHUB_URL ?? "#";
 
 export function HomePage() {
   const [isIntroClosed, setIsIntroClosed] = useState(() =>
@@ -42,26 +43,39 @@ export function HomePage() {
 
   return (
     <div className="space-y-6">
+      <p className="text-center text-sm text-muted-foreground">
+        Made by{" "}
+        <a
+          href={AUTHOR_GITHUB_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-4 hover:text-foreground transition-colors"
+        >
+          Paulo Paiva
+        </a>
+      </p>
       {!isIntroClosed && (
-        <Card>
-          <CardHeader className="relative pr-12">
+        <Card className="border shadow-none overflow-hidden">
+          <div className="relative flex items-center justify-between bg-red-600 px-3 py-2 pr-9">
+            <CardTitle className="text-sm font-medium text-white">
+              What is Echo Room
+            </CardTitle>
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="absolute right-2 top-2 h-8 w-8"
+              className="absolute right-1 top-1 h-6 w-6 text-white/90 hover:bg-white/20 hover:text-white"
               onClick={handleCloseIntro}
               aria-label="Close"
             >
               ×
             </Button>
-            <CardTitle>What is echoroom</CardTitle>
-            <CardDescription className="text-sm mt-1 leading-relaxed">
-               is an anonymous imageboard-style community. Post and
-              comment without accounts—your identity is a short fingerprint so
-              you stay anonymous but recognizable in a thread. Browse by
-              community, vote on posts and comments, and expand replies in
-              nested threads. No sign-up required.
+          </div>
+          <CardHeader className="space-y-0 px-3 py-2">
+            <CardDescription className="text-xs leading-snug">
+              Anonymous imageboard-style community. Post and comment without
+              accounts—your identity is a short fingerprint. Browse by community,
+              vote, expand replies. No sign-up required.
             </CardDescription>
           </CardHeader>
         </Card>
