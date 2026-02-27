@@ -1,9 +1,9 @@
-import { TrendingUp } from "lucide-react";
-import { PostCardCompact } from "@/components/post/PostCardCompact";
+import { Link } from "react-router-dom";
+import { MessageCircle, TrendingUp } from "lucide-react";
 import { useMostCommentedPosts } from "@/hooks/useMostCommentedPosts";
 import { HomePostListSkeleton } from "./HomePostListSkeleton";
 
-const LIMIT = 3;
+const LIMIT = 8;
 
 export function TopCommentedPostsSection() {
   const { data, isLoading, isError, error } = useMostCommentedPosts(LIMIT);
@@ -31,21 +31,33 @@ export function TopCommentedPostsSection() {
         Most commented
       </h2>
       {isLoading ? (
-        <HomePostListSkeleton count={2} horizontal />
+        <HomePostListSkeleton variant="list" count={5} />
       ) : posts.length === 0 ? (
         <p className="text-sm text-muted-foreground">No posts yet.</p>
       ) : (
-        <ul className="grid grid-cols-12 gap-2 items-stretch grid-rows-1">
-          {posts.map((post) => (
-            <li key={post.id} className="flex min-h-0 min-w-0 col-span-12 sm:col-span-4">
-              <PostCardCompact
-                post={post}
-                communitySlug={post.community?.slug ?? ""}
-                commentCount={commentCounts[post.id] ?? 0}
-                showHotIcon
-              />
-            </li>
-          ))}
+        <ul className="list-none border rounded-md divide-y divide-border">
+          {posts.map((post) => {
+            const slug = post.community?.slug ?? "";
+            return (
+              <li key={post.id}>
+                <Link
+                  to={`/c/${slug}/post/${post.id}`}
+                  className="flex items-center justify-between gap-2 px-3 py-2 text-sm hover:bg-muted/50 transition-colors"
+                >
+                  <span className="min-w-0 truncate text-foreground">
+                    {post.title}
+                  </span>
+                  <span className="shrink-0 flex items-center gap-1.5">
+                    <span className="text-muted-foreground">/c/{slug}</span>
+                    <span className="flex items-center gap-1 font-medium text-orange-600 dark:text-orange-400">
+                      <MessageCircle className="h-3 w-3" />
+                      {commentCounts[post.id] ?? 0}
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

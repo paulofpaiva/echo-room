@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { BackLink } from "@/components/navigation/BackLink";
+import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
 import { ArrowDownAZ, ArrowUpAZ, MessageCircle, Search, TrendingUp } from "lucide-react";
 import { useSearchPosts } from "@/hooks/useSearchPosts";
 import { useDebouncedEffect } from "@/hooks/useDebouncedEffect";
@@ -145,6 +146,10 @@ export function SearchPage() {
                       <h3 className="text-sm font-medium line-clamp-1 text-foreground">
                         {r.title}
                       </h3>
+                      <p className="mt-1 text-xs text-muted-foreground flex flex-wrap items-center gap-2">
+                        <FingerprintBadge anonFingerprint={r.anon_fingerprint} countryCode={r.country_code} />
+                        <span>{new Date(r.created_at).toLocaleString()}</span>
+                      </p>
                       {r.content_preview && (
                         <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
                           {r.content_preview}
@@ -156,7 +161,6 @@ export function SearchPage() {
                           <MessageCircle className="h-3 w-3" />
                           {r.comment_count}
                         </span>
-                        <span>{new Date(r.created_at).toLocaleString()}</span>
                       </p>
                     </Link>
                   </li>

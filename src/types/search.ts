@@ -7,4 +7,6 @@ export interface SearchPostResult {
   community_slug: string;
   created_at: string;
   comment_count: number;
+  anon_fingerprint: string | null;
+  country_code: string | null;
 }

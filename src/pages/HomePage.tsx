@@ -23,30 +23,29 @@ export function HomePage() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-lg border border-border p-4">
-        <div>
-          <h1 className="text-2xl font-semibold">Welcome to echoroom</h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            Pick a community below to browse and join the conversation.
-          </p>
-        </div>
-        <div className="mt-4">
-          {isLoading ? (
-            <CommunityListSkeleton />
-          ) : (
-            <CommunityList
-              communities={communities ?? []}
-              postCounts={postCounts}
-            />
-          )}
-        </div>
+      <div className="pb-4 border-b border-dashed border-border">
+        <h1 className="text-2xl font-semibold">Welcome to echoroom</h1>
+        <p className="text-muted-foreground text-sm mt-1">
+          Pick a community below to browse and join the conversation.
+        </p>
+      </div>
+
+      <section className="pb-4 border-b border-dashed border-border">
+        {isLoading ? (
+          <CommunityListSkeleton />
+        ) : (
+          <CommunityList
+            communities={communities ?? []}
+            postCounts={postCounts}
+          />
+        )}
       </section>
 
-      <section className="rounded-lg border border-border p-4">
+      <section className="pb-4 border-b border-dashed border-border">
         <LatestPostsSection />
       </section>
 
-      <section className="rounded-lg border border-border p-4">
+      <section className="pb-4 border-b border-dashed border-border">
         <TopCommentedPostsSection />
       </section>
 
