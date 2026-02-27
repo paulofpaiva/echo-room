@@ -3,7 +3,10 @@ import { MessageCircle } from "lucide-react";
 import type { Post } from "@/types/post";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
 import { Skeleton } from "@/components/skeleton/Skeleton";
+import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
+
+const BUCKET = "post-images";
 
 interface PostCardProps {
   post: Post;
@@ -42,6 +45,24 @@ export function PostCard({
         <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
           {post.content}
         </p>
+        {post.post_images && post.post_images.length > 0 && (() => {
+          const n = post.post_images.length;
+          const sizeClass = n === 1 ? "h-28 w-28" : n === 2 ? "h-20 w-20" : "h-14 w-14";
+          return (
+            <div className="mt-2 flex flex-wrap gap-1">
+              {[...post.post_images]
+                .sort((a, b) => a.display_order - b.display_order)
+                .map((img) => (
+                  <img
+                    key={img.id}
+                    src={supabase.storage.from(BUCKET).getPublicUrl(img.storage_path).data.publicUrl}
+                    alt=""
+                    className={cn(sizeClass, "shrink-0 rounded object-cover border border-border/60")}
+                  />
+                ))}
+            </div>
+          );
+        })()}
         <div className="mt-2 flex items-center text-muted-foreground">
           <span className="flex items-center gap-1 text-xs" title="Comments">
             <MessageCircle className="h-3 w-3" />

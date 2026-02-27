@@ -16,6 +16,7 @@ export async function fetchPostsByCommunityPage(
     .select("*, community:communities!inner(*), post_images(*)")
     .eq("community.slug", communitySlug)
     .order("created_at", { ascending: false })
+    .order("display_order", { ascending: true, foreignTable: "post_images" })
     .range(from, to);
 
   if (error) throw error;
@@ -30,6 +31,7 @@ export async function fetchPostById(postId: string): Promise<Post | null> {
     .from("posts")
     .select("*, community:communities(*), post_images(*)")
     .eq("id", postId)
+    .order("display_order", { ascending: true, foreignTable: "post_images" })
     .single();
 
   if (error) {

@@ -7,6 +7,10 @@ import { CommentList } from "@/components/comment/CommentList";
 import { PostDetailSkeleton } from "@/components/skeleton/PostDetailSkeleton";
 import { Skeleton } from "@/components/skeleton/Skeleton";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
+import { supabase } from "@/lib/supabase";
+import { cn } from "@/lib/utils";
+
+const BUCKET = "post-images";
 
 export function PostDetailPage() {
   const { slug, postId } = useParams<{ slug: string; postId: string }>();
@@ -58,6 +62,24 @@ export function PostDetailPage() {
         <p className="mt-2 text-sm text-foreground whitespace-pre-wrap">
           {post.content}
         </p>
+        {post.post_images && post.post_images.length > 0 && (() => {
+          const n = post.post_images.length;
+          const sizeClass = n === 1 ? "h-72 w-72 max-w-full" : n === 2 ? "h-56 w-56" : "h-40 w-40";
+          return (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {[...post.post_images]
+                .sort((a, b) => a.display_order - b.display_order)
+                .map((img) => (
+                  <img
+                    key={img.id}
+                    src={supabase.storage.from(BUCKET).getPublicUrl(img.storage_path).data.publicUrl}
+                    alt=""
+                    className={cn(sizeClass, "shrink-0 rounded-lg object-cover border border-border")}
+                  />
+                ))}
+            </div>
+          );
+        })()}
         <p className="mt-2 flex items-center gap-1 text-xs text-muted-foreground" title="Comments">
           <MessageCircle className="h-3 w-3" />
           {isCommentCountsLoading ? (
