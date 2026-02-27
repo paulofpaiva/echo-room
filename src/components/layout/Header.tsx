@@ -1,8 +1,14 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Newspaper, Search } from "lucide-react";
+import { Newspaper, Search, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { SettingsDialog } from "./SettingsDialog";
 
 const GITHUB_REPO_URL =
   import.meta.env.VITE_GITHUB_REPO_URL ?? "https://github.com";
+
+const headerLinkClass =
+  "text-[hsl(var(--header-text))] hover:text-[hsl(var(--header-text-hover))] transition-colors";
 
 function GitHubIcon({ className }: { className?: string }) {
   return (
@@ -22,41 +28,56 @@ function GitHubIcon({ className }: { className?: string }) {
 }
 
 export function Header() {
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
   return (
-    <header className="sticky top-0 z-10 border-b border-amber-800 bg-amber-900">
-      <div className="flex h-14 items-center justify-between px-4">
-        <Link
-          to="/"
-          className="font-semibold text-amber-200 hover:text-amber-100 transition-colors"
-        >
-          echoroom
-        </Link>
-        <nav className="flex items-center gap-3">
+    <>
+      <header className="sticky top-0 z-10 border-b border-[hsl(var(--header-border))] bg-[hsl(var(--header-bg))]">
+        <div className="flex h-14 items-center justify-between px-4">
           <Link
-            to="/news"
-            className="text-amber-200 hover:text-amber-100 transition-colors"
-            aria-label="News"
+            to="/"
+            className={`font-semibold ${headerLinkClass}`}
           >
-            <Newspaper className="h-5 w-5" />
+            echoroom
           </Link>
-          <Link
-            to="/search"
-            className="text-amber-200 hover:text-amber-100 transition-colors"
-            aria-label="Search"
-          >
-            <Search className="h-5 w-5" />
-          </Link>
-          <a
-            href={GITHUB_REPO_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-amber-200 hover:text-amber-100 transition-colors"
-            aria-label="Open repository on GitHub"
-          >
-            <GitHubIcon className="h-5 w-5" />
-          </a>
-        </nav>
-      </div>
-    </header>
+          <nav className="flex items-center gap-1">
+            <Link
+              to="/news"
+              className={`p-2 ${headerLinkClass}`}
+              aria-label="News"
+            >
+              <Newspaper className="h-5 w-5" />
+            </Link>
+            <Link
+              to="/search"
+              className={`p-2 ${headerLinkClass}`}
+              aria-label="Search"
+            >
+              <Search className="h-5 w-5" />
+            </Link>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className={`h-9 w-9 shrink-0 ${headerLinkClass} hover:bg-black/10`}
+              onClick={() => setSettingsOpen(true)}
+              aria-label="Open settings"
+            >
+              <Settings className="h-5 w-5" />
+            </Button>
+            <a
+              href={GITHUB_REPO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`p-2 ${headerLinkClass}`}
+              aria-label="Open repository on GitHub"
+            >
+              <GitHubIcon className="h-5 w-5" />
+            </a>
+          </nav>
+        </div>
+      </header>
+      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+    </>
   );
 }

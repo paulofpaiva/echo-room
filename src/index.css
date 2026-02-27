@@ -4,6 +4,10 @@
 
 @layer base {
   :root {
+    --header-bg: 32 95% 26%;
+    --header-text: 48 96% 76%;
+    --header-text-hover: 48 96% 90%;
+    --header-border: 32 95% 22%;
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -45,6 +49,36 @@
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
+  }
+  [data-header-color="amber"] {
+    --header-bg: 32 95% 26%;
+    --header-text: 48 96% 76%;
+    --header-text-hover: 48 96% 90%;
+    --header-border: 32 95% 22%;
+  }
+  [data-header-color="violet"] {
+    --header-bg: 263 70% 35%;
+    --header-text: 270 90% 85%;
+    --header-text-hover: 270 90% 95%;
+    --header-border: 263 70% 28%;
+  }
+  [data-header-color="blue"] {
+    --header-bg: 217 91% 35%;
+    --header-text: 214 95% 80%;
+    --header-text-hover: 214 95% 92%;
+    --header-border: 217 91% 28%;
+  }
+  [data-header-color="green"] {
+    --header-bg: 142 71% 28%;
+    --header-text: 138 76% 75%;
+    --header-text-hover: 138 76% 90%;
+    --header-border: 142 71% 22%;
+  }
+  [data-header-color="rose"] {
+    --header-bg: 347 77% 38%;
+    --header-text: 350 90% 88%;
+    --header-text-hover: 350 90% 95%;
+    --header-border: 347 77% 32%;
   }
   * {
     @apply border-border;
