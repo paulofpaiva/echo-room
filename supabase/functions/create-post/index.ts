@@ -14,13 +14,20 @@ interface CreatePostBody {
   content: string;
   community_slug: string;
   anon_fingerprint?: string | null;
+  country_code?: string | null;
   image_paths?: string[];
+}
+
+function normalizeCountryCode(value: unknown): string | null {
+  if (value == null || typeof value !== "string") return null;
+  const s = value.trim().toUpperCase();
+  return /^[A-Z]{2}$/.test(s) ? s : null;
 }
 
 async function handlePost(req: Request): Promise<Response> {
   try {
     const body = (await req.json()) as CreatePostBody;
-    const { title, content, community_slug, anon_fingerprint, image_paths } = body;
+    const { title, content, community_slug, anon_fingerprint, country_code, image_paths } = body;
 
     if (!title?.trim() || !content?.trim() || !community_slug?.trim()) {
       return new Response(
@@ -55,6 +62,7 @@ async function handlePost(req: Request): Promise<Response> {
         content: content.trim(),
         community_id: community.id,
         anon_fingerprint: anon_fingerprint?.trim() || null,
+        country_code: normalizeCountryCode(country_code),
       })
       .select("id")
       .single();

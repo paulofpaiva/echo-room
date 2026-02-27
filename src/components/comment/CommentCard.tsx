@@ -34,7 +34,7 @@ export function CommentCard({
       className="block py-3 border-b border-border/40 last:border-b-0"
     >
       <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-2">
-        <FingerprintBadge anonFingerprint={comment.anon_fingerprint} />
+        <FingerprintBadge anonFingerprint={comment.anon_fingerprint} countryCode={comment.country_code} />
         {isPostAuthor && (
           <span
             className={cn(

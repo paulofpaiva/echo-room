@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useCreatePost } from "@/hooks/useCreatePost";
+import { useCountryCode } from "@/hooks/useCountryCode";
 import { getOrCreateAnonFingerprint } from "@/lib/anon-fingerprint";
 import type { CreatePostFormValues } from "@/schemas/createPost";
 
 export function useCreatePostForm(slug: string | undefined) {
   const navigate = useNavigate();
   const createPost = useCreatePost();
+  const { countryCode } = useCountryCode();
 
   const submit = async (data: CreatePostFormValues, imageFiles: File[]) => {
     if (!slug?.trim()) return;
@@ -14,6 +16,7 @@ export function useCreatePostForm(slug: string | undefined) {
       content: data.content.trim(),
       communitySlug: slug,
       anonFingerprint: getOrCreateAnonFingerprint() || null,
+      countryCode: countryCode ?? null,
       imageFiles,
     });
     navigate(`/c/${slug}/post/${id}`, { state: { from: `/c/${slug}` }, replace: true });

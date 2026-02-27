@@ -16,11 +16,12 @@ export interface CreatePostParams {
   content: string;
   communitySlug: string;
   anonFingerprint: string | null;
+  countryCode: string | null;
   imageFiles: File[];
 }
 
 export async function createPost(params: CreatePostParams): Promise<{ id: string }> {
-  const { title, content, communitySlug, anonFingerprint, imageFiles } = params;
+  const { title, content, communitySlug, anonFingerprint, countryCode, imageFiles } = params;
   const baseUrl = import.meta.env.VITE_SUPABASE_URL;
   const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
   if (!baseUrl || !anonKey) throw new Error("Missing Supabase env");
@@ -53,6 +54,7 @@ export async function createPost(params: CreatePostParams): Promise<{ id: string
       content: content.trim(),
       community_slug: communitySlug.trim(),
       anon_fingerprint: anonFingerprint || null,
+      country_code: countryCode || null,
       image_paths,
     }),
   });

@@ -7,6 +7,7 @@ export interface Post {
   content: string;
   community_id: string;
   anon_fingerprint: string | null;
+  country_code: string | null;
   created_at: string;
   updated_at: string;
   community?: Community;

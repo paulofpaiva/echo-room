@@ -39,7 +39,7 @@ export function PostCard({
           {post.title}
         </h3>
         <p className="mt-1 text-xs text-muted-foreground flex flex-wrap items-center gap-2">
-          <FingerprintBadge anonFingerprint={post.anon_fingerprint} />
+          <FingerprintBadge anonFingerprint={post.anon_fingerprint} countryCode={post.country_code} />
           <span>{new Date(post.created_at).toLocaleString()}</span>
         </p>
         <p className="mt-1 text-xs text-muted-foreground line-clamp-2">

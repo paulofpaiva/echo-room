@@ -14,12 +14,19 @@ interface CreateCommentBody {
   parent_id?: string | null;
   content: string;
   anon_fingerprint?: string | null;
+  country_code?: string | null;
+}
+
+function normalizeCountryCode(value: unknown): string | null {
+  if (value == null || typeof value !== "string") return null;
+  const s = value.trim().toUpperCase();
+  return /^[A-Z]{2}$/.test(s) ? s : null;
 }
 
 async function handlePost(req: Request): Promise<Response> {
   try {
     const body = (await req.json()) as CreateCommentBody;
-    const { post_id, parent_id, content, anon_fingerprint } = body;
+    const { post_id, parent_id, content, anon_fingerprint, country_code } = body;
 
     if (!post_id?.trim() || !content?.trim()) {
       return new Response(
@@ -70,6 +77,7 @@ async function handlePost(req: Request): Promise<Response> {
         parent_id: parentId,
         content: content.trim(),
         anon_fingerprint: anon_fingerprint?.trim() || null,
+        country_code: normalizeCountryCode(country_code),
       })
       .select("id")
       .single();

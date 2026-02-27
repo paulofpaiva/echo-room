@@ -11,6 +11,7 @@ import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
 import { CommentCard } from "@/components/comment/CommentCard";
 import { CommentDetailSkeleton } from "@/components/skeleton/CommentDetailSkeleton";
 import { Button } from "@/components/ui/button";
+import { useCountryCode } from "@/hooks/useCountryCode";
 import { getOrCreateAnonFingerprint } from "@/lib/anon-fingerprint";
 import { createCommentSchema, type CreateCommentFormValues } from "@/schemas/createComment";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,7 @@ export function CommentDetailPage() {
   } = useRepliesInfinite(post?.id ?? "", commentId ?? null, !!post && !!commentId);
 
   const createReply = useCreateComment(post?.id ?? "");
+  const { countryCode } = useCountryCode();
 
   const {
     register,
@@ -54,6 +56,7 @@ export function CommentDetailPage() {
         parentId: comment.id,
         content: data.content,
         anonFingerprint: getOrCreateAnonFingerprint() || null,
+        countryCode: countryCode ?? null,
       })
       .then(() => reset())
       .catch(() => {});
@@ -106,7 +109,7 @@ export function CommentDetailPage() {
 
       <div>
         <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-2">
-          <FingerprintBadge anonFingerprint={comment.anon_fingerprint} />
+          <FingerprintBadge anonFingerprint={comment.anon_fingerprint} countryCode={comment.country_code} />
           {post.anon_fingerprint != null &&
             comment.anon_fingerprint != null &&
             post.anon_fingerprint === comment.anon_fingerprint && (

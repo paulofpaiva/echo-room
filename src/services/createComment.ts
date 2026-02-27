@@ -3,12 +3,13 @@ export interface CreateCommentParams {
   parentId: string | null;
   content: string;
   anonFingerprint: string | null;
+  countryCode: string | null;
 }
 
 export async function createComment(
   params: CreateCommentParams
 ): Promise<{ id: string }> {
-  const { postId, parentId, content, anonFingerprint } = params;
+  const { postId, parentId, content, anonFingerprint, countryCode } = params;
   const baseUrl = import.meta.env.VITE_SUPABASE_URL;
   const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
   if (!baseUrl || !anonKey) throw new Error("Missing Supabase env");
@@ -25,6 +26,7 @@ export async function createComment(
       parent_id: parentId,
       content: content.trim(),
       anon_fingerprint: anonFingerprint || null,
+      country_code: countryCode || null,
     }),
   });
 

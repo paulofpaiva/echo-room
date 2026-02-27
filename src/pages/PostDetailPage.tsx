@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/skeleton/Skeleton";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
+import { useCountryCode } from "@/hooks/useCountryCode";
 import { getOrCreateAnonFingerprint } from "@/lib/anon-fingerprint";
 import { createCommentSchema, type CreateCommentFormValues } from "@/schemas/createComment";
 import { cn } from "@/lib/utils";
@@ -29,6 +30,7 @@ export function PostDetailPage() {
   const { data: replyCounts = {} } = useReplyCounts(post?.id ?? "", !!post);
   const commentCount = post ? (commentCounts[post.id] ?? 0) : 0;
   const createComment = useCreateComment(post?.id ?? "");
+  const { countryCode } = useCountryCode();
 
   const {
     register,
@@ -48,6 +50,7 @@ export function PostDetailPage() {
         parentId: null,
         content: data.content,
         anonFingerprint: getOrCreateAnonFingerprint() || null,
+        countryCode: countryCode ?? null,
       })
       .then(() => reset())
       .catch(() => {});
@@ -86,7 +89,7 @@ export function PostDetailPage() {
       <div>
         <h1 className="text-2xl font-semibold text-foreground">{post.title}</h1>
         <p className="mt-1 text-xs text-muted-foreground flex flex-wrap items-center gap-2">
-          <FingerprintBadge anonFingerprint={post.anon_fingerprint} />
+          <FingerprintBadge anonFingerprint={post.anon_fingerprint} countryCode={post.country_code} />
           <span>{new Date(post.created_at).toLocaleString()}</span>
         </p>
         <p className="mt-2 text-sm text-foreground whitespace-pre-wrap">
