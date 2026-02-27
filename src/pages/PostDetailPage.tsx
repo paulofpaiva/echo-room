@@ -83,9 +83,9 @@ export function PostDetailPage() {
         <p className="mt-2 flex items-center gap-1 text-xs text-muted-foreground" title="Comments">
           <MessageCircle className="h-3 w-3" />
           {isCommentCountsLoading ? (
-            <Skeleton className="h-3 w-16 inline-block" />
+            <Skeleton className="h-3 w-5 inline-block" />
           ) : (
-            <span>{commentCount} comment{commentCount !== 1 ? "s" : ""}</span>
+            <span>{commentCount}</span>
           )}
         </p>
       </div>
