@@ -1,7 +1,7 @@
 import { Link, useParams, useLocation, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ExternalLink, MessageCircle, Send } from "lucide-react";
+import { ExternalLink, Send } from "lucide-react";
 import { useNews } from "@/hooks/useNews";
 import { useNewsReplyCounts } from "@/hooks/useNewsReplyCounts";
 import { useCreateNewsComment } from "@/hooks/useCreateNewsComment";
@@ -16,6 +16,7 @@ export function NewsDetailPage() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const returnTo = (location.state as { from?: string } | null)?.from ?? "/news";
+  const backLabel = returnTo === "/" ? "Back to home" : "Back to news";
 
   const { data: news, isLoading, isError, error } = useNews(id, true);
   const { data: replyCounts = {} } = useNewsReplyCounts(news?.id ?? "", !!news);
@@ -52,7 +53,7 @@ export function NewsDetailPage() {
     return (
       <div className="space-y-6">
         <Link to={returnTo} className="text-sm text-muted-foreground hover:text-foreground">
-          ← Back to news
+          ← {backLabel}
         </Link>
         <div className="animate-pulse space-y-4">
           <div className="aspect-video w-full max-w-2xl rounded-lg bg-muted" />
@@ -69,8 +70,8 @@ export function NewsDetailPage() {
         <p className="text-destructive">
           {error instanceof Error ? error.message : "News not found."}
         </p>
-        <Link to="/news" className="text-primary text-sm underline">
-          ← Back to news
+        <Link to={returnTo} className="text-primary text-sm underline">
+          ← {backLabel}
         </Link>
       </div>
     );
@@ -82,7 +83,7 @@ export function NewsDetailPage() {
         to={returnTo}
         className="text-sm text-muted-foreground hover:text-foreground"
       >
-        ← Back to news
+        ← {backLabel}
       </Link>
 
       <article className="rounded-lg border border-border/60 bg-card overflow-hidden">
@@ -124,27 +125,43 @@ export function NewsDetailPage() {
         </div>
       </article>
 
-      <section>
-        <h2 className="text-lg font-semibold flex items-center gap-2 mb-3">
-          <MessageCircle className="h-5 w-5" />
-          Comments
-        </h2>
-        <form onSubmit={rhfHandleSubmit(onSubmitComment)} className="flex gap-2 mb-4">
-          <textarea
-            {...register("content")}
-            placeholder="Write a comment..."
-            className="flex-1 min-h-[80px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          />
-          <Button type="submit" size="icon" disabled={createComment.isPending}>
-            <Send className="h-4 w-4" />
-          </Button>
+      <section className="border-t border-border pt-4 mt-2">
+        <h2 className="text-lg font-semibold mb-3">Comments</h2>
+        <form onSubmit={rhfHandleSubmit(onSubmitComment)} className="mb-4 space-y-2">
+          <div className="flex gap-2 items-center">
+            <textarea
+              {...register("content")}
+              rows={3}
+              placeholder="Write a comment..."
+              className={cn(
+                "flex-1 min-w-0 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                errors.content && "border-destructive focus-visible:ring-destructive"
+              )}
+            />
+            <Button
+              type="submit"
+              disabled={createComment.isPending}
+              size="icon"
+              className="shrink-0 rounded-full"
+              aria-label="Post comment"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+          {errors.content && (
+            <p className="text-sm text-destructive">{errors.content.message}</p>
+          )}
+          {createComment.isError && (
+            <p className="text-sm text-destructive">
+              {createComment.error instanceof Error
+                ? createComment.error.message
+                : "Failed to post comment"}
+            </p>
+          )}
         </form>
-        {errors.content && (
-          <p className="text-sm text-destructive mb-2">{errors.content.message}</p>
-        )}
         <NewsCommentList
           newsId={news.id}
-          returnTo={returnTo}
+          returnTo={`/news/${news.id}`}
           replyCounts={replyCounts}
         />
       </section>

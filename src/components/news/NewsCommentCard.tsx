@@ -34,9 +34,7 @@ export function NewsCommentCard({
       </p>
       <p className="mt-1 text-xs text-muted-foreground">
         <span>{new Date(comment.created_at).toLocaleString()}</span>
-        {replyCount > 0 && (
-          <span> · {replyCount} repl{replyCount === 1 ? "y" : "ies"}</span>
-        )}
+        <span> · {replyCount} repl{replyCount === 1 ? "y" : "ies"}</span>
       </p>
     </Link>
   );

@@ -5,8 +5,9 @@ export function useNewsCommentCounts(
   newsIds: string[],
   enabled: boolean
 ) {
+  const stableKey = newsIds.length > 0 ? [...newsIds].sort().join(",") : "";
   return useQuery({
-    queryKey: ["news-comment-counts", newsIds],
+    queryKey: ["news-comment-counts", stableKey],
     queryFn: () => fetchNewsCommentCounts(newsIds),
     enabled: newsIds.length > 0 && enabled,
   });

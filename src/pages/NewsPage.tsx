@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { Search } from "lucide-react";
 import { useNewsList } from "@/hooks/useNewsList";
 import { useNewsCommentCounts } from "@/hooks/useNewsCommentCounts";
@@ -8,8 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function NewsPage() {
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const q = searchParams.get("q") ?? "";
+  const returnTo = location.pathname + location.search;
   const [inputValue, setInputValue] = useState(q);
 
   useEffect(() => {
@@ -27,7 +29,10 @@ export function NewsPage() {
   } = useNewsList(q);
 
   const newsIds = items.map((n) => n.id);
-  const { data: commentCounts = {} } = useNewsCommentCounts(newsIds, newsIds.length > 0);
+  const { data: commentCounts = {}, isLoading: isCommentCountsLoading } = useNewsCommentCounts(
+    newsIds,
+    newsIds.length > 0
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,6 +102,8 @@ export function NewsPage() {
                     <NewsCard
                       news={news}
                       commentCount={commentCounts[news.id] ?? 0}
+                      commentCountLoading={isCommentCountsLoading}
+                      returnTo={returnTo}
                     />
                   </li>
                 ))}

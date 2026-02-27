@@ -1,18 +1,28 @@
 import { Link } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
 import type { News } from "@/types/news";
+import { Skeleton } from "@/components/skeleton/Skeleton";
 import { cn } from "@/lib/utils";
 
 interface NewsCardProps {
   news: News;
   commentCount?: number;
+  commentCountLoading?: boolean;
+  returnTo?: string;
   className?: string;
 }
 
-export function NewsCard({ news, commentCount = 0, className }: NewsCardProps) {
+export function NewsCard({
+  news,
+  commentCount = 0,
+  commentCountLoading = false,
+  returnTo = "/news",
+  className,
+}: NewsCardProps) {
   return (
     <Link
       to={`/news/${news.id}`}
+      state={{ from: returnTo }}
       className={cn(
         "block rounded-lg border border-border/60 bg-card overflow-hidden transition-colors hover:border-border hover:bg-muted/30",
         className
@@ -40,7 +50,11 @@ export function NewsCard({ news, commentCount = 0, className }: NewsCardProps) {
           )}
           <span className="flex items-center gap-1">
             <MessageCircle className="h-3 w-3" />
-            {commentCount}
+            {commentCountLoading ? (
+              <Skeleton className="h-3 w-5 inline-block" />
+            ) : (
+              <span>{commentCount}</span>
+            )}
           </span>
         </p>
       </div>
