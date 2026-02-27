@@ -16,7 +16,6 @@ import {
 } from "@/lib/cookie";
 
 const INTRO_CLOSED_COOKIE = "echo-room-intro-closed";
-const AUTHOR_GITHUB_URL = import.meta.env.VITE_AUTHOR_GITHUB_URL ?? "#";
 
 export function HomePage() {
   const [isIntroClosed, setIsIntroClosed] = useState(() =>
@@ -43,22 +42,11 @@ export function HomePage() {
 
   return (
     <div className="space-y-6">
-      <p className="text-center text-sm text-muted-foreground">
-        Made by{" "}
-        <a
-          href={AUTHOR_GITHUB_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline underline-offset-4 hover:text-foreground transition-colors"
-        >
-          Paulo Paiva
-        </a>
-      </p>
       {!isIntroClosed && (
         <Card className="border shadow-none overflow-hidden">
           <div className="relative flex items-center justify-between bg-red-600 px-3 py-2 pr-9">
             <CardTitle className="text-sm font-medium text-white">
-              What is Echo Room
+              What is echoroom
             </CardTitle>
             <Button
               type="button"

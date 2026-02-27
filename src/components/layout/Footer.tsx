@@ -4,13 +4,13 @@ const AUTHOR_GITHUB_URL = import.meta.env.VITE_AUTHOR_GITHUB_URL ?? "#";
 
 export function Footer() {
   return (
-    <footer className="border-t border-border px-4 py-4 text-center text-sm text-muted-foreground space-y-1">
+    <footer className="border-t border-border px-3 py-1.5 text-center text-xs text-muted-foreground space-y-0.5">
       <p>
         <a
           href={GITHUB_REPO_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-foreground underline underline-offset-4 transition-colors"
+          className="hover:text-foreground underline underline-offset-2 transition-colors"
         >
           echoroom
         </a>{" "}
@@ -22,7 +22,7 @@ export function Footer() {
           href={AUTHOR_GITHUB_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-foreground underline underline-offset-4 transition-colors"
+          className="hover:text-foreground underline underline-offset-2 transition-colors"
         >
           Paulo Paiva
         </a>
