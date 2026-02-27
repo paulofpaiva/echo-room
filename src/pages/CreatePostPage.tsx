@@ -1,13 +1,14 @@
 import { useRef } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import { BackLink } from "@/components/navigation/BackLink";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePlus } from "lucide-react";
 import { useCommunities } from "@/hooks/useCommunities";
 import { useCreatePostForm } from "@/hooks/useCreatePostForm";
 import { usePostImageList } from "@/hooks/usePostImageList";
 import { PostImageSortableList } from "@/components/post/PostImageSortableList";
+import { MarkdownEditor } from "@/components/ui/markdown-editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createPostSchema, type CreatePostFormValues } from "@/schemas/createPost";
@@ -37,6 +38,7 @@ export function CreatePostPage() {
 
   const {
     register,
+    control,
     handleSubmit: rhfHandleSubmit,
     formState: { errors },
   } = useForm<CreatePostFormValues>({
@@ -91,14 +93,19 @@ export function CreatePostPage() {
           <label htmlFor="content" className="block text-sm font-medium mb-1">
             Content
           </label>
-          <textarea
-            id="content"
-            {...register("content")}
-            rows={6}
-            placeholder="Write your post..."
-            className={cn(
-              "flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-base md:text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
-              errors.content && "border-destructive focus-visible:ring-destructive"
+          <Controller
+            name="content"
+            control={control}
+            render={({ field }) => (
+              <MarkdownEditor
+                id="content"
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                placeholder="Write your post... (Markdown supported)"
+                rows={6}
+                error={!!errors.content}
+              />
             )}
           />
           {errors.content && (
