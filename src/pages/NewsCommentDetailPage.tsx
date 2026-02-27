@@ -3,6 +3,7 @@ import { BackLink } from "@/components/navigation/BackLink";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageCircle, Send } from "lucide-react";
+import { MarkdownContent } from "@/components/ui/markdown-content";
 import { ReportButton } from "@/components/ui/report-button";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { useNewsComment } from "@/hooks/useNewsComment";
@@ -101,9 +102,9 @@ export function NewsCommentDetailPage() {
             countryCode={comment.country_code}
           />
         </p>
-        <p className="mt-2 text-sm text-foreground leading-snug whitespace-pre-wrap">
-          {comment.content}
-        </p>
+        <div className="mt-2 text-sm text-foreground">
+          <MarkdownContent content={comment.content} />
+        </div>
         <p className="mt-2 text-xs text-muted-foreground">
           <span>{new Date(comment.created_at).toLocaleString()}</span>
         </p>

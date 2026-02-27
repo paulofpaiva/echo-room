@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
 import type { Post } from "@/types/post";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
+import { MarkdownContent } from "@/components/ui/markdown-content";
 import { ReportButton } from "@/components/ui/report-button";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { Skeleton } from "@/components/skeleton/Skeleton";
@@ -44,9 +45,9 @@ export function PostCard({
           <FingerprintBadge anonFingerprint={post.anon_fingerprint} countryCode={post.country_code} />
           <span>{new Date(post.created_at).toLocaleString()}</span>
         </p>
-        <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
-          {post.content}
-        </p>
+        <div className="mt-1 text-xs text-muted-foreground">
+          <MarkdownContent content={post.content} compact />
+        </div>
         {post.post_images && post.post_images.length > 0 && (() => {
           const n = post.post_images.length;
           const sizeClass = n === 1 ? "h-28 w-28" : n === 2 ? "h-20 w-20" : "h-14 w-14";

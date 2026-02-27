@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { FingerprintBadge } from "@/components/ui/fingerprint-badge";
+import { MarkdownContent } from "@/components/ui/markdown-content";
 import { ReportButton } from "@/components/ui/report-button";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import type { NewsComment } from "@/types/news-comment";
@@ -26,9 +27,9 @@ export function NewsCommentCard({
             countryCode={comment.country_code}
           />
         </p>
-        <p className="mt-1 text-sm text-foreground leading-snug">
-          {comment.content}
-        </p>
+        <div className="mt-1">
+          <MarkdownContent content={comment.content} />
+        </div>
         <p className="mt-1 text-xs text-muted-foreground">
           <span>{new Date(comment.created_at).toLocaleString()}</span>
           <span> · {replyCount} repl{replyCount === 1 ? "y" : "ies"}</span>

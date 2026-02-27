@@ -3,6 +3,7 @@ import { BackLink } from "@/components/navigation/BackLink";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageCircle, Send } from "lucide-react";
+import { MarkdownContent } from "@/components/ui/markdown-content";
 import { ReportButton } from "@/components/ui/report-button";
 import { ShareCopyButton } from "@/components/ui/share-copy-button";
 import { usePost } from "@/hooks/usePost";
@@ -90,9 +91,9 @@ export function PostDetailPage() {
           <FingerprintBadge anonFingerprint={post.anon_fingerprint} countryCode={post.country_code} />
           <span>{new Date(post.created_at).toLocaleString()}</span>
         </p>
-        <p className="mt-2 text-sm text-foreground whitespace-pre-wrap">
-          {post.content}
-        </p>
+        <div className="mt-2 text-sm text-foreground">
+          <MarkdownContent content={post.content} />
+        </div>
         {post.post_images && post.post_images.length > 0 && (() => {
           const n = post.post_images.length;
           const sizeClass = n === 1 ? "h-72 w-72 max-w-full" : n === 2 ? "h-56 w-56" : "h-40 w-40";
